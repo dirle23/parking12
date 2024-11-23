@@ -41,7 +41,6 @@ document.addEventListener("DOMContentLoaded", function () {
       })
         .then((response) => response.json())
         .then((data) => {
-          alert(`Delete response: ${JSON.stringify(data)}`);
           mostrarMensaje(data.success ? "exito" : "error", data.message);
           if (data.success) fetchVehiculos();
           
@@ -49,7 +48,6 @@ document.addEventListener("DOMContentLoaded", function () {
           currentIdToDelete = null;
         })
         .catch((error) => {
-          alert(`Delete error: ${error}`);
           mostrarMensaje(
             "error",
             "Error al eliminar vehículo. Inténtalo nuevamente."
@@ -88,7 +86,6 @@ document.addEventListener("DOMContentLoaded", function () {
     })
       .then((response) => response.json())
       .then((data) => {
-        alert(`Submit response: ${JSON.stringify(data)}`);
         mostrarMensaje(data.success ? "exito" : "error", data.message);
         if (data.success) {
           modal.classList.add("hidden");
@@ -96,7 +93,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       })
       .catch((error) => {
-        alert(`Submit error: ${error}`);
         mostrarMensaje("error", "Error al enviar datos. Inténtalo nuevamente.");
         console.error("Error:", error);
       });
@@ -114,7 +110,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return response.json();
       })
       .then((data) => {
-        alert(`Fetch response: ${JSON.stringify(data)}`);
         dataTable.innerHTML = "";
         data.forEach((vehiculo) => {
           const row = document.createElement("div");
@@ -147,7 +142,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       })
       .catch((error) => {
-        alert(`Fetch error: ${error}`);
         mostrarMensaje(
           "error",
           "Error al cargar vehículos. Inténtalo nuevamente."
@@ -164,7 +158,6 @@ document.addEventListener("DOMContentLoaded", function () {
     })
       .then((response) => response.json())
       .then((vehiculo) => {
-        alert(`Edit fetch response: ${JSON.stringify(vehiculo)}`);
         document.getElementById("id_vehiculo").value = vehiculo.id_vehiculo;
         document.getElementById("placa").value = vehiculo.placa;
         document.getElementById("tipo").value = vehiculo.tipo;
@@ -172,7 +165,6 @@ document.addEventListener("DOMContentLoaded", function () {
         modal.classList.remove("hidden");
       })
       .catch((error) => {
-        alert(`Edit fetch error: ${error}`);
         mostrarMensaje(
           "error",
           "Error al cargar vehículo. Inténtalo nuevamente."
@@ -194,7 +186,6 @@ document.addEventListener("DOMContentLoaded", function () {
     })
       .then((response) => response.json())
       .then((vehiculo) => {
-        alert(`View fetch response: ${JSON.stringify(vehiculo)}`);
         document.getElementById("verId").textContent = vehiculo.id_vehiculo;
         document.getElementById("verPlaca").textContent = vehiculo.placa;
         document.getElementById("verTipo").textContent = vehiculo.tipo;
@@ -202,7 +193,6 @@ document.addEventListener("DOMContentLoaded", function () {
         modalVer.classList.remove("hidden");
       })
       .catch((error) => {
-        alert(`View fetch error: ${error}`);
         mostrarMensaje(
           "error",
           "Error al cargar vehículo. Inténtalo nuevamente."
