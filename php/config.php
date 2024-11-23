@@ -8,7 +8,7 @@ try {
     // Configuración de la base de datos
     $dsn = 'mysql:host=localhost;dbname=parqueadero;charset=utf8';
     $username = 'root';
-    $password = '';
+    $password = 'ciro';
 
     // Creación de la conexión PDO
     $pdo = new PDO($dsn, $username, $password);
