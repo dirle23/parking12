@@ -2,10 +2,6 @@
 header('Content-Type: application/json');
 include 'config.php';
 
-print_r($_POST);
-
-
-
 // Manejar solicitudes OPTIONS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header('Access-Control-Allow-Origin: *');
@@ -13,8 +9,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header('Access-Control-Allow-Headers: Content-Type, Authorization');
     exit(0);
 }
-
-
 
 try {
     $pdo = new PDO($dsn, $username, $password);

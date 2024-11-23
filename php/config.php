@@ -16,7 +16,6 @@ try {
     // Configurar el modo de error a excepción
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    echo json_encode(['success' => true, 'message' => 'Conexión exitosa a la base de datos.']);
 } catch (PDOException $e) {
     // Manejar errores de conexión
     http_response_code(500);

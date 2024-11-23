@@ -104,20 +104,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function fetchVehiculos() {
     console.log("Fetching vehiculos...");
-    fetch("php/server_vehiculos.php", {
+    fetch("php/server_vehiculo.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: "action=fetch",
     })
       .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+        if (!response.ok) throw new Error('Network response was not ok')
         return response.json();
       })
       .then((data) => {
         alert(`Fetch response: ${JSON.stringify(data)}`);
-        console.log(data);
         dataTable.innerHTML = "";
         data.forEach((vehiculo) => {
           const row = document.createElement("div");
