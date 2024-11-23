@@ -1,0 +1,54 @@
+CREATE DATABASE IF NOT EXISTS parqueadero;
+USE parqueadero;
+
+CREATE TABLE puestos (
+    id_puesto INT AUTO_INCREMENT PRIMARY KEY,
+    codigo VARCHAR(10) NOT NULL UNIQUE,
+    ubicacion VARCHAR(255) NOT NULL,
+    estado ENUM('disponible', 'ocupado') DEFAULT 'disponible'
+);
+
+CREATE TABLE vehiculos (
+    id_vehiculo INT AUTO_INCREMENT PRIMARY KEY,
+    placa VARCHAR(10) NOT NULL UNIQUE,
+    tipo ENUM('motocicleta', 'automovil', 'camioneta') NOT NULL,
+    propietario VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE tarifas (
+    id_tarifa INT AUTO_INCREMENT PRIMARY KEY,
+    tipo_vehiculo ENUM('motocicleta', 'automovil', 'camioneta') NOT NULL UNIQUE,
+    tarifa_hora DECIMAL(10, 2) NOT NULL,
+    tiempo_gracia INT DEFAULT 15
+);
+
+CREATE TABLE ingresos (
+    id_ingreso INT AUTO_INCREMENT PRIMARY KEY,
+    id_vehiculo INT NOT NULL,
+    id_puesto INT NOT NULL,
+    fecha_ingreso DATETIME NOT NULL,
+    fecha_salida DATETIME,
+    tarifa_aplicada DECIMAL(10, 2),
+    multa DECIMAL(10, 2) DEFAULT 0,
+    FOREIGN KEY (id_vehiculo) REFERENCES vehiculos(id_vehiculo),
+    FOREIGN KEY (id_puesto) REFERENCES puestos(id_puesto)
+);
+
+CREATE TABLE mensualidades (
+    id_mensualidad INT AUTO_INCREMENT PRIMARY KEY,
+    id_vehiculo INT NOT NULL,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL,
+    horario_entrada TIME NOT NULL,
+    horario_salida TIME NOT NULL,
+    FOREIGN KEY (id_vehiculo) REFERENCES vehiculos(id_vehiculo)
+);
+
+CREATE TABLE multas (
+    id_multa INT AUTO_INCREMENT PRIMARY KEY,
+    id_ingreso INT NOT NULL,
+    monto DECIMAL(10, 2) NOT NULL,
+    fecha_generada DATETIME NOT NULL,
+    pagada BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (id_ingreso) REFERENCES ingresos(id_ingreso)
+);

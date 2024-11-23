@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos</title>
+    <link href="css/tailwind.min.css" rel="stylesheet">
+    <link href="css/style_usuario.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+    <!-- Header con botón de menú para mostrar/ocultar el sidebar -->
+    <header class="p-4 bg-indigo-600 text-white flex items-center justify-center relative">
+        <button id="menu-toggle" class="text-white p-2 focus:outline-none absolute left-4">
+            <!-- Ícono de menú hamburguesa siempre visible -->
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+        <h1 class="text-2xl font-bold">Dashboard</h1>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="w-64 bg-indigo-600 text-white min-h-screen transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <div class="p-4 mt-16">
+                <h1 class="text-2xl font-bold">App Menu</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html" class="block px-4 py-2 hover:bg-indigo-700">Inicio</a></li>
+                    <li><a href="usuario.html" class="block px-4 py-2 hover:bg-indigo-700">Usuarios</a></li>
+                    <li><a href="cliente.html" class="block px-4 py-2 hover:bg-indigo-700">Clientes</a></li>
+                    <li><a href="producto.html" class="block px-4 py-2 hover:bg-indigo-700">Productos</a></li>
+                    <li><a href="factura.html" class="block px-4 py-2 hover:bg-indigo-700">Facturas</a></li>
+                    <li><a href="permisos_usuario.html" class="block px-4 py-2 hover:bg-indigo-700">Permisos de Usuario</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 md:p-10 flex flex-col items-center">
+            <h2 class="text-3xl font-bold mb-4 text-center">Gestión de Productos</h2>
+            <button id="openModal" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 w-full md:w-auto mb-6">Agregar Producto</button>
+            <div id="dataList" class="w-full max-w-6xl mt-6 overflow-x-auto">
+                <div class="min-w-full bg-white shadow-md rounded-lg">
+                    <div class="hidden md:table-header-group">
+                        <div class="table-row">
+                            <div class="table-cell py-2 px-4 font-semibold">ID</div>
+                            <div class="table-cell py-2 px-4 font-semibold">Nombre</div>
+                            <div class="table-cell py-2 px-4 font-semibold">Descripción</div>
+                            <div class="table-cell py-2 px-4 font-semibold">Precio</div>
+                            <div class="table-cell py-2 px-4 font-semibold">Stock</div>
+                            <div class="table-cell py-2 px-4 font-semibold">Acciones</div>
+                        </div>
+                    </div>
+                    <div id="dataTable" class="block md:table-row-group">
+                        <!-- Datos de productos -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="fixed inset-0 flex items-center justify-center hidden bg-gray-800 bg-opacity-50">
+        <div class="bg-white w-full max-w-lg mx-4 md:mx-0 md:w-96 shadow-lg p-6 relative rounded-lg">
+            <h2 class="text-lg font-semibold mb-4">Formulario de Producto</h2>
+            <form id="dataForm" class="space-y-6" onsubmit="enviarDatos(event)">
+                <input type="hidden" id="id" name="id">
+                <div>
+                    <label for="nombre" class="block text-lg font-medium">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Nombre" required class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label for="descripcion" class="block text-lg font-medium">Descripción</label>
+                    <textarea id="descripcion" name="descripcion" placeholder="Descripción" required class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"></textarea>
+                </div>
+                <div>
+                    <label for="precio" class="block text-lg font-medium">Precio</label>
+                    <input type="number" step="0.01" id="precio" name="precio" placeholder="Precio" required class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label for="stock" class="block text-lg font-medium">Stock</label>
+                    <input type="number" id="stock" name="stock" placeholder="Stock" required class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <button type="submit" class="block w-full py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700">Guardar Producto</button>
+            </form>
+            <button id="closeModal" class="px-4 py-2 bg-gray-300 rounded-lg absolute top-4 right-4">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Ver Producto -->
+    <div id="modalVer" class="fixed inset-0 flex items-center justify-center hidden bg-gray-800 bg-opacity-50">
+        <div class="bg-white w-full max-w-lg mx-4 md:mx-0 md:w-96 shadow-lg p-6 relative rounded-lg">
+            <h2 class="text-lg font-semibold mb-4">Detalles del Producto</h2>
+            <div class="space-y-4">
+                <p><strong>ID:</strong> <span id="verId"></span></p>
+                <p><strong>Nombre:</strong> <span id="verNombre"></span></p>
+                <p><strong>Descripción:</strong> <span id="verDescripcion"></span></p>
+                <p><strong>Precio:</strong> <span id="verPrecio"></span></p>
+                <p><strong>Stock:</strong> <span id="verStock"></span></p>
+            </div>
+            <button id="closeModalVer" class="px-4 py-2 bg-gray-300 rounded-lg absolute top-4 right-4">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación de Eliminación -->
+    <div id="modalEliminar" class="fixed inset-0 flex items-center justify-center hidden bg-gray-800 bg-opacity-50">
+        <div class="bg-white w-full max-w-lg mx-4 md:mx-0 md:w-96 shadow-lg p-6 relative rounded-lg">
+            <h2 class="text-lg font-semibold mb-4">¿Estás seguro de que deseas eliminar este producto?</h2>
+            <div class="flex justify-end">
+                <button id="btnEliminarConfirmar" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Eliminar</button>
+                <button id="btnEliminarCancelar" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 ml-2">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Mensaje -->
+    <div id="modalMensaje" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 id="mensajeTexto" class="text-lg font-semibold"></h2>
+        </div>
+    </div>
+
+    <script src="js/app_producto.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/menuHamburgueza.js"></script>
+</body>
+
+</html>

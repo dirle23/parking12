@@ -1,0 +1,59 @@
+/* Estilo personalizado para el menú lateral (sidebar) */
+#sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1;
+}
+
+#sidebar.active {
+    transform: translateX(0);
+}
+
+/* Asegurar que el ícono de menú siempre esté visible */
+#menu-toggle {
+    z-index: 10;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+/* Estilos para los botones */
+button {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    margin: 0 5px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Colores y estilos específicos para los botones */
+button.bg-green-500 {
+    background-color: #48bb78;
+}
+
+button.bg-yellow-500 {
+    background-color: #ecc94b;
+}
+
+button.bg-red-500 {
+    background-color: #f56565;
+}
+
+/* Colores al pasar el mouse (hover) */
+button.bg-green-700:hover {
+    background-color: #2f855a;
+}
+
+button.bg-yellow-700:hover {
+    background-color: #d69e2e;
+}
+
+button.bg-red-700:hover {
+    background-color: #c53030;
+}
