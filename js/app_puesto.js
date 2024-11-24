@@ -13,11 +13,36 @@ document.addEventListener('DOMContentLoaded', function () {
   const mensajeTexto = document.getElementById('mensajeTexto');
   let currentIdToDelete = null;
 
-  abrirModal.addEventListener('click', () => {
-      modal.classList.remove('hidden');
-      dataForm.reset();
-      document.getElementById('id_puesto').value = '';
-  });
+abrirModal.addEventListener('click', () => {
+    modal.classList.remove('hidden');
+    dataForm.reset();  
+    document.getElementById('id_puesto').value = '';  
+
+    fetch('php/server_puesto.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'action=fetch'  
+    })
+    .then(response => response.json())
+    .then(data => {
+        const enumValues = data[0]["enum_values"];
+        console.log(enumValues);
+        const estadoSelect = document.getElementById('estado');
+        estadoSelect.innerHTML = ''; 
+        
+        enumValues.forEach(state => {
+            const option = document.createElement('option');
+            option.value = state;
+            option.textContent = state.charAt(0).toUpperCase() + state.slice(1); 
+            estadoSelect.appendChild(option);
+        });
+    })
+    .catch(error => {
+        mostrarMensaje('error', 'Error al cargar los valores del estado. Inténtalo nuevamente.');
+        console.error('Error:', error);
+    });
+});
+
 
   cerrarModal.addEventListener('click', () => {
       modal.classList.add('hidden');
