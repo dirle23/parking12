@@ -34,13 +34,11 @@ try {
             $ubicacion = $_POST['ubicacion'];
             $estado = $_POST['estado'];
 
-            // Verificar si el estado es válido
             if (!in_array($estado, $enum_values)) {
                 echo json_encode(['success' => false, 'message' => 'Valor de estado no válido.']);
                 break;
             }
 
-            // Agregar nuevo puesto
             $stmt = $pdo->prepare("INSERT INTO puestos (codigo, ubicacion, estado) VALUES (?, ?, ?)");
             $stmt->execute([$ubicacion, $codigo, $estado]);
             echo json_encode(['success' => true, 'message' => 'Puesto creado con éxito.']);
@@ -57,7 +55,6 @@ try {
                 break;
             }
 
-            // Actualizar puesto
             $stmt = $pdo->prepare("UPDATE puestos SET codigo = ?, ubicacion = ?, estado = ? WHERE id_puesto = ?");
             $stmt->execute([$codigo, $ubicacion, $estado, $id_puesto]);
             echo json_encode(['success' => true, 'message' => 'Puesto actualizado con éxito.']);
@@ -66,7 +63,6 @@ try {
         case 'delete':
             $id_puesto = $_POST['id_puesto'];
 
-            // Eliminar puesto
             $stmt = $pdo->prepare("DELETE FROM puestos WHERE id_puesto = ?");
             $stmt->execute([$id_puesto]);
             echo json_encode(['success' => true, 'message' => 'Puesto eliminado con éxito.']);
@@ -75,24 +71,33 @@ try {
         case 'fetch':
             if (isset($_POST['id_puesto'])) {
                 $id_puesto = $_POST['id_puesto'];
-
-                // Obtener puesto por ID
+        
                 $stmt = $pdo->prepare("SELECT * FROM puestos WHERE id_puesto = ?");
                 $stmt->execute([$id_puesto]);
                 $puesto = $stmt->fetch(PDO::FETCH_ASSOC);
-
+        
                 if ($puesto) {
-                    $puesto['enum_values'] = $enum_values;
+                    $puesto['enum_values'] = $enum_values; 
                     echo json_encode($puesto);
                 } else {
                     echo json_encode(['success' => false, 'message' => 'Puesto no encontrado.']);
                 }
             } else {
+                // Obtener todos los puestos
                 $stmt = $pdo->query("SELECT * FROM puestos");
                 $puestos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                echo json_encode($puestos);
+        
+                if ($puestos) {
+                    foreach ($puestos as &$puesto) {
+                        $puesto['enum_values'] = $enum_values;  
+                    }
+                    echo json_encode($puestos);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'No se encontraron puestos.']);
+                }
             }
             break;
+            
 
         default:
             echo json_encode(['success' => false, 'message' => 'Acción no válida.']);
