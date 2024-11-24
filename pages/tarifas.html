@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarifas</title>
+    <link href="/css/ouput.css" rel="stylesheet">
+    <link href="/css/style_usuario.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+    <!-- Header -->
+    <div id="header-container"></div>
+
+    <div class="flex">
+        <main class="flex-1 p-6 md:p-10 flex flex-col items-center justify-center">
+            <h2 class="text-3xl font-bold mb-4 text-center">Gestión de Tarifas</h2>
+            <button id="openModal" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 w-full md:w-auto mb-6">
+                Agregar Tarifa
+            </button>
+            <div id="dataList" class="max-w-6xl mt-6 mx-auto overflow-x-auto">
+                <div class="min-w-full bg-white shadow-md rounded-lg">
+                    <div class="hidden md:table-header-group">
+                        <div class="table-row">
+                            <div class="table-cell py-2 px-4 font-semibold text-center">ID</div>
+                            <div class="table-cell py-2 px-4 font-semibold text-center">Tipo de Vehículo</div>
+                            <div class="table-cell py-2 px-4 font-semibold text-center">Tarifa por Hora</div>
+                            <div class="table-cell py-2 px-4 font-semibold text-center">Tiempo de Gracia</div>
+                            <div class="table-cell py-2 px-4 font-semibold text-center">Acciones</div>
+                        </div>
+                    </div>
+                    <div id="dataTable" class="block md:table-row-group">
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="fixed inset-0 flex items-center justify-center hidden bg-gray-800 bg-opacity-50">
+        <div class="bg-white w-full max-w-lg mx-4 md:mx-0 md:w-96 shadow-lg p-6 relative rounded-lg">
+            <h2 class="text-lg font-semibold mb-4">Formulario de Tarifa</h2>
+            <form id="dataForm" class="space-y-6" onsubmit="enviarDatos(event)">
+                <input type="hidden" id="id_tarifa" name="id_tarifa">
+                <div>
+                    <label for="tipo_vehiculo" class="block text-lg font-medium">Tipo de Vehículo</label>
+                    <select id="tipo_vehiculo" name="tipo_vehiculo" required
+                        class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        <!-- Opciones se llenarán dinámicamente -->
+                    </select>
+                </div>
+                <div>
+                    <label for="tarifa_hora" class="block text-lg font-medium">Tarifa por Hora</label>
+                    <input type="number" step="0.01" id="tarifa_hora" name="tarifa_hora" placeholder="Tarifa por Hora"
+                        required class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label for="tiempo_gracia" class="block text-lg font-medium">Tiempo de Gracia (minutos)</label>
+                    <input type="number" id="tiempo_gracia" name="tiempo_gracia" placeholder="Tiempo de Gracia" required
+                        class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500" value="15">
+                </div>
+                <button type="submit"
+                    class="block w-full py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700">Guardar
+                    Tarifa</button>
+            </form>
+            <button id="closeModal" class="px-4 py-2 bg-gray-300 rounded-lg absolute top-4 right-4">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Ver Tarifa -->
+    <div id="modalVer" class="fixed inset-0 flex items-center justify-center hidden bg-gray-800 bg-opacity-50">
+        <div class="bg-white w-full max-w-lg mx-4 md:mx-0 md:w-96 shadow-lg p-6 relative rounded-lg">
+            <h2 class="text-lg font-semibold mb-4">Detalles de la Tarifa</h2>
+            <div class="space-y-4">
+                <p><strong>ID:</strong> <span id="verId"></span></p>
+                <p><strong>Tipo de Vehículo:</strong> <span id="verTipoVehiculo"></span></p>
+                <p><strong>Tarifa por Hora:</strong> <span id="verTarifaHora"></span></p>
+                <p><strong>Tiempo de Gracia:</strong> <span id="verTiempoGracia"></span></p>
+            </div>
+            <button id="closeModalVer" class="px-4 py-2 bg-gray-300 rounded-lg absolute top-4 right-4">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación de Eliminación -->
+    <div id="modalEliminar" class="fixed inset-0 flex items-center justify-center hidden bg-gray-800 bg-opacity-50">
+        <div class="bg-white w-full max-w-lg mx-4 md:mx-0 md:w-96 shadow-lg p-6 relative rounded-lg">
+            <h2 class="text-lg font-semibold mb-4">¿Estás seguro de que deseas eliminar esta tarifa?</h2>
+            <div class="flex justify-end">
+                <button id="btnEliminarConfirmar"
+                    class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Eliminar</button>
+                <button id="btnEliminarCancelar"
+                    class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 ml-2">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Mensaje -->
+    <div id="modalMensaje" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 id="mensajeTexto" class="text-lg font-semibold"></h2>
+        </div>
+    </div>
+
+    <script src="/js/app_tarifa.js"></script>
+    <script src="/js/script.js"></script>
+    <script src="/js/loadHeaderPages.js"></script>
+</body>
+
+</html>

@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   btnEliminarConfirmar.addEventListener("click", () => {
     if (currentIdToDelete) {
-      fetch("php/server_vehiculo.php", {
+      fetch("/php/server_vehiculo.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `action=delete&id_vehiculo=${currentIdToDelete}`,
@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const action = formData.get("id_vehiculo") ? "update" : "add";
     formData.append("action", action);
 
-    fetch("php/server_vehiculo.php", {
+    fetch("/php/server_vehiculo.php", {
       method: "POST",
       body: formData,
     })
@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function fetchVehiculos() {
-    fetch("php/server_vehiculo.php", {
+    fetch("/php/server_vehiculo.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: "action=fetch",
@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   window.editVehiculo = function (id) {
-    fetch("php/server_vehiculo.php", {
+    fetch("/php/server_vehiculo.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `action=fetch&id_vehiculo=${id}`,
@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   window.viewVehiculo = function (id) {
-    fetch("php/server_vehiculo.php", {
+    fetch("/php/server_vehiculo.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `action=fetch&id_vehiculo=${id}`,

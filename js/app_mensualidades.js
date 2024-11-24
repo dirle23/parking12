@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (btnEliminarConfirmar) {
         btnEliminarConfirmar.addEventListener('click', () => {
             if (currentIdToDelete) {
-                fetch('php/server_mensualidades.php', {
+                fetch('/php/server_mensualidades.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: `action=delete&id_mensualidad=${currentIdToDelete}`
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const action = formData.get('id_mensualidad') ? 'update' : 'add';
         formData.append('action', action);
 
-        fetch('php/server_mensualidades.php', {
+        fetch('/php/server_mensualidades.php', {
             method: 'POST',
             body: formData
         })
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Obtener y mostrar todas las mensualidades
     function fetchMensualidades() {
-        fetch('php/server_mensualidades.php', {
+        fetch('/php/server_mensualidades.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'action=fetch'
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Editar mensualidad
     window.editMensualidad = function (id) {
-        fetch('php/server_mensualidades.php', {
+        fetch('/php/server_mensualidades.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `action=fetch&id_mensualidad=${id}`
@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Ver detalles de la mensualidad
     window.viewMensualidad = function (id) {
-        fetch('php/server_mensualidades.php', {
+        fetch('/php/server_mensualidades.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `action=fetch&id_mensualidad=${id}`

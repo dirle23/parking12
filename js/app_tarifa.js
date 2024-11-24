@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Confirmar eliminación de tarifa
     btnEliminarConfirmar.addEventListener('click', () => {
         if (currentIdToDelete) {
-            fetch('php/server_tarifa.php', {
+            fetch('/php/server_tarifa.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `action=delete&id_tarifa=${currentIdToDelete}`
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const action = formData.get('id_tarifa') ? 'update' : 'add';
         formData.append('action', action);
 
-        fetch('php/server_tarifa.php', {
+        fetch('/php/server_tarifa.php', {
             method: 'POST',
             body: formData
         })
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Obtener y mostrar todas las tarifas
     function fetchTarifas() {
-        fetch('php/server_tarifa.php', {
+        fetch('/php/server_tarifa.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'action=fetch'
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Obtener y llenar el select de tipos de vehículos
     function fetchVehicleTypes() {
-        fetch('php/server_tarifa.php', {
+        fetch('/php/server_tarifa.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'action=fetch_vehicle_types'
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Editar tarifa
     window.editTarifa = function (id) {
-        fetch('php/server_tarifa.php', {
+        fetch('/php/server_tarifa.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `action=fetch&id_tarifa=${id}`
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Ver detalles de la tarifa
     window.viewTarifa = function (id) {
-        fetch('php/server_tarifa.php', {
+        fetch('/php/server_tarifa.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `action=fetch&id_tarifa=${id}`

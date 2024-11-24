@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Confirmar la eliminación de un registro
     btnEliminarConfirmar.addEventListener("click", () => {
       if (currentIdToDelete) {
-        fetch("php/server_multa.php", {
+        fetch("/php/server_multa.php", {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: `action=delete&id_multa=${currentIdToDelete}`,
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const action = formData.get("id_multa") ? "update" : "add";
       formData.append("action", action);
   
-      fetch("php/server_multa.php", {
+      fetch("/php/server_multa.php", {
         method: "POST",
         body: formData,
       })
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
   
     // Función para obtener y mostrar los registros
     function fetchRegistros() {
-      fetch("php/server_multa.php", {
+      fetch("/php/server_multa.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: "action=fetch",
@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function () {
   
     // Función para ver un registro
     window.viewRegistro = function (id_multa) {
-      fetch("php/server_multa.php", {
+      fetch("/php/server_multa.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `action=fetch&id_multa=${id_multa}`,
@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function () {
   
     // Función para editar un registro
     window.editRegistro = function (id_multa) {
-      fetch("php/server_multa.php", {
+      fetch("/php/server_multa.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `action=fetch&id_multa=${id_multa}`,

@@ -1,0 +1,31 @@
+<!-- FILE: partials/header.html -->
+<!-- Header con botón de menú para mostrar/ocultar el sidebar -->
+<header class="p-4 bg-color7 text-color1 flex items-center justify-center relative">
+    <button id="menu-toggle" class="text-color1 p-2 focus:outline-none absolute left-4">
+        <!-- Ícono de menú hamburguesa siempre visible -->
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+        </svg>
+    </button>
+    <h1 class="text-2xl font-bold">Dashboard</h1>
+</header>
+
+<div class="flex">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-color6 text-color1 min-h-screen transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+        <div class="p-4 mt-16">
+            <h1 class="text-2xl font-bold">App Menu</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/index.html" class="block px-4 py-2 hover:bg-color6">Inicio</a></li>
+                <li><a href="/pages/vehiculos.html" class="block px-4 py-2 hover:bg-color6">Vehículos</a></li>
+                <li><a href="/pages/tarifas.html" class="block px-4 py-2 hover:bg-color6">Tarifas</a></li>
+                <li><a href="/pages/ingresos.html" class="block px-4 py-2 hover:bg-color6">Ingresos</a></li>
+                <li><a href="/pages/puestos.html" class="block px-4 py-2 hover:bg-color6">Puestos</a></li>
+                <li><a href="/pages/mensualidades.html" class="block px-4 py-2 hover:bg-color6">Mensualidades</a></li>
+                <li><a href="/pages/multas.html" class="block px-4 py-2 hover:bg-color6">Multas</a></li>
+            </ul>
+        </nav>
+    </aside>
+</div>

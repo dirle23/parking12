@@ -18,7 +18,7 @@ abrirModal.addEventListener('click', () => {
     dataForm.reset();  
     document.getElementById('id_puesto').value = '';  
 
-    fetch('php/server_puesto.php', {
+    fetch('/php/server_puesto.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: 'action=fetch'  
@@ -59,7 +59,7 @@ abrirModal.addEventListener('click', () => {
 
   btnEliminarConfirmar.addEventListener('click', () => {
       if (currentIdToDelete) {
-          fetch('php/server_puesto.php', {
+          fetch('/php/server_puesto.php', {
               method: 'POST',
               headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
               body: `action=delete&id_puesto=${currentIdToDelete}`
@@ -95,7 +95,7 @@ abrirModal.addEventListener('click', () => {
       const action = formData.get('id_puesto') ? 'update' : 'add';
       formData.append('action', action);
 
-      fetch('php/server_puesto.php', {
+      fetch('/php/server_puesto.php', {
           method: 'POST',
           body: formData
       })
@@ -114,7 +114,7 @@ abrirModal.addEventListener('click', () => {
   }
 
   function fetchPuestos() {
-      fetch('php/server_puesto.php', {
+      fetch('/php/server_puesto.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: 'action=fetch'
@@ -150,7 +150,7 @@ abrirModal.addEventListener('click', () => {
   }
 
   window.editPuesto = function (id) {
-    fetch('php/server_puesto.php', {
+    fetch('/php/server_puesto.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `action=fetch&id_puesto=${id}`
@@ -194,7 +194,7 @@ abrirModal.addEventListener('click', () => {
   };
 
   window.viewPuesto = function (id) {
-      fetch('php/server_puesto.php', {
+      fetch('/php/server_puesto.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: `action=fetch&id_puesto=${id}`
