@@ -10,7 +10,8 @@ module.exports = {
         color4: '#767276', // grisMedio
         color5: '#535454', // gris
         color6: '#2e2d2e', // grisOscuro
-        color7: '#c52225', // rojo
+        color7: '#c71518', // rojo
+        color8: '#9e0f11', // rojoOscuro
       },
       spacing: {
         '0.5': '0.125rem', // 2px

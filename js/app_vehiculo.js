@@ -111,33 +111,33 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((data) => {
         dataTable.innerHTML = "";
         data.forEach((vehiculo) => {
-          const row = document.createElement("div");
-          row.classList.add(
-            "block",
+          const card = document.createElement("div");
+          card.classList.add(
             "bg-white",
-            "md:table-row",
-            "mb-4",
-            "md:mb-0",
             "border",
             "border-gray-200",
             "rounded-lg",
             "shadow-sm",
-            "p-4",
-            "md:p-0"
+            "p-4"
           );
-          row.innerHTML = `
-            <div class="py-2 px-4 block md:table-cell"><span class="md:hidden font-bold">ID: </span>${vehiculo.id_vehiculo}</div>
-            <div class="py-2 px-4 block md:table-cell"><span class="md:hidden font-bold">Placa: </span>${vehiculo.placa}</div>
-            <div class="py-2 px-4 block md:table-cell"><span class="md:hidden font-bold">Tipo: </span>${vehiculo.tipo}</div>
-            <div class="py-2 px-4 block md:table-cell"><span class="md:hidden font-bold">Propietario: </span>${vehiculo.propietario}</div>
-            <div class="py-2 px-4 block md:table-cell flex flex-col md:flex-row md:justify-center space-y-2 md:space-y-0 md:space-x-2">
-                <span class="md:hidden font-bold">Acciones: </span>
-                <button class="bg-green-500 text-white px-2 py-1 rounded-md hover:bg-green-700 transition duration-300" onclick="viewVehiculo(${vehiculo.id_vehiculo})">Ver</button>
-                <button class="bg-yellow-500 text-white px-2 py-1 rounded-md hover:bg-yellow-700 transition duration-300" onclick="editVehiculo(${vehiculo.id_vehiculo})">Editar</button>
-                <button class="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-700 transition duration-300" onclick="confirmDeleteVehiculo(${vehiculo.id_vehiculo})">Eliminar</button>
+          card.innerHTML = `
+            <div class="py-2 px-4"><span class="font-bold">ID: </span>${vehiculo.id_vehiculo}</div>
+            <div class="py-2 px-4"><span class="font-bold">Placa: </span>${vehiculo.placa}</div>
+            <div class="py-2 px-4"><span class="font-bold">Tipo: </span>${vehiculo.tipo}</div>
+            <div class="py-2 px-4"><span class="font-bold">Propietario: </span>${vehiculo.propietario}</div>
+            <div class="flex justify-center mt-4 space-x-4">
+                <button class="bg-color7 text-white p-2 rounded-full hover:bg-color6 transition duration-300" onclick="viewVehiculo(${vehiculo.id_vehiculo})">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button class="bg-color7 text-white p-2 rounded-full hover:bg-color6 transition duration-300" onclick="editVehiculo(${vehiculo.id_vehiculo})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="bg-color7 text-white p-2 rounded-full hover:bg-color6 transition duration-300" onclick="confirmDeleteVehiculo(${vehiculo.id_vehiculo})">
+                    <i class="fas fa-trash"></i>
+                </button>
             </div>
           `;
-          dataTable.appendChild(row);
+          dataTable.appendChild(card);
         });
       })
       .catch((error) => {

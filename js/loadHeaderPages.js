@@ -14,6 +14,7 @@ fetch('/partials/headerpages.html')
                 // Toggle para mostrar/ocultar el sidebar
                 sidebar.classList.toggle("active");
                 sidebar.classList.toggle("translate-x-0"); // Muestra/oculta el sidebar
+                sidebar.classList.toggle("-translate-x-full"); // Oculta el sidebar
             });
         }
     });
