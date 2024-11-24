@@ -42,9 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
           .then(response => response.json())
           .then(data => {
               mostrarMensaje(data.success ? 'exito' : 'error', data.message);
-              if (data.success) {
-                  fetchPuestos();
-              }
+              if (data.success) fetchPuestos();
               modalEliminar.classList.add('hidden');
               currentIdToDelete = null;
           })
@@ -58,15 +56,9 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   window.addEventListener('click', function (event) {
-      if (event.target === modal) {
-          modal.classList.add('hidden');
-      }
-      if (event.target === modalVer) {
-          modalVer.classList.add('hidden');
-      }
-      if (event.target === modalEliminar) {
-          modalEliminar.classList.add('hidden');
-      }
+      if (event.target === modal) modal.classList.add('hidden');
+      if (event.target === modalVer) modalVer.classList.add('hidden');
+      if (event.target === modalEliminar) modalEliminar.classList.add('hidden');
   });
 
   dataForm.addEventListener('submit', enviarDatos);

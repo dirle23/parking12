@@ -45,7 +45,10 @@ try {
         case 'fetch':
             if (isset($_POST['id_multa'])) {
                 $id_multa = $_POST['id_multa'];
-                $stmt = $pdo->prepare("SELECT * FROM multas WHERE id_multa = ?");
+                $stmt = $pdo->prepare("SELECT m.*, i.id_ingreso, i.fecha_ingreso 
+                                       FROM multas m
+                                       JOIN ingresos i ON m.id_ingreso = i.id_ingreso
+                                       WHERE m.id_multa = ?");
                 $stmt->execute([$id_multa]);
                 $multa = $stmt->fetch(PDO::FETCH_ASSOC);
                 if ($multa) {
@@ -54,7 +57,9 @@ try {
                     echo json_encode(['success' => false, 'message' => 'Multa no encontrada.']);
                 }
             } else {
-                $stmt = $pdo->query("SELECT * FROM multas");
+                $stmt = $pdo->query("SELECT m.*, i.id_ingreso, i.fecha_ingreso 
+                                     FROM multas m
+                                     JOIN ingresos i ON m.id_ingreso = i.id_ingreso");
                 $multas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 echo json_encode($multas);
             }

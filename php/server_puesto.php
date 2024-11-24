@@ -82,14 +82,12 @@ try {
                 $puesto = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 if ($puesto) {
-                    // Incluir los valores del ENUM en la respuesta
                     $puesto['enum_values'] = $enum_values;
                     echo json_encode($puesto);
                 } else {
                     echo json_encode(['success' => false, 'message' => 'Puesto no encontrado.']);
                 }
             } else {
-                // Obtener todos los puestos
                 $stmt = $pdo->query("SELECT * FROM puestos");
                 $puestos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 echo json_encode($puestos);
