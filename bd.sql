@@ -1,10 +1,11 @@
--- Eliminar la base de datos si existe
+-- Eliminar la base de datos si ya existe
 DROP DATABASE IF EXISTS parqueadero;
 
 -- Crear la base de datos
-CREATE DATABASE IF NOT EXISTS parqueadero;
+CREATE DATABASE parqueadero;
 USE parqueadero;
 
+-- Crear la tabla puestos
 CREATE TABLE puestos (
     id_puesto INT AUTO_INCREMENT PRIMARY KEY,
     codigo VARCHAR(10) NOT NULL UNIQUE,
@@ -12,6 +13,7 @@ CREATE TABLE puestos (
     estado ENUM('disponible', 'ocupado') DEFAULT 'disponible'
 );
 
+-- Crear la tabla vehiculos
 CREATE TABLE vehiculos (
     id_vehiculo INT AUTO_INCREMENT PRIMARY KEY,
     placa VARCHAR(10) NOT NULL UNIQUE,
@@ -19,6 +21,7 @@ CREATE TABLE vehiculos (
     propietario VARCHAR(255) NOT NULL
 );
 
+-- Crear la tabla tarifas
 CREATE TABLE tarifas (
     id_tarifa INT AUTO_INCREMENT PRIMARY KEY,
     tipo_vehiculo ENUM('motocicleta', 'automovil', 'camioneta') NOT NULL UNIQUE,
@@ -26,6 +29,7 @@ CREATE TABLE tarifas (
     tiempo_gracia INT DEFAULT 15
 );
 
+-- Crear la tabla ingresos
 CREATE TABLE ingresos (
     id_ingreso INT AUTO_INCREMENT PRIMARY KEY,
     id_vehiculo INT NOT NULL,
@@ -38,6 +42,7 @@ CREATE TABLE ingresos (
     FOREIGN KEY (id_puesto) REFERENCES puestos(id_puesto)
 );
 
+-- Crear la tabla mensualidades
 CREATE TABLE mensualidades (
     id_mensualidad INT AUTO_INCREMENT PRIMARY KEY,
     id_vehiculo INT NOT NULL,
@@ -48,6 +53,7 @@ CREATE TABLE mensualidades (
     FOREIGN KEY (id_vehiculo) REFERENCES vehiculos(id_vehiculo)
 );
 
+-- Crear la tabla multas
 CREATE TABLE multas (
     id_multa INT AUTO_INCREMENT PRIMARY KEY,
     id_ingreso INT NOT NULL,
@@ -57,32 +63,38 @@ CREATE TABLE multas (
     FOREIGN KEY (id_ingreso) REFERENCES ingresos(id_ingreso)
 );
 
-
+-- Insertar datos ficticios en la tabla puestos
 INSERT INTO puestos (codigo, ubicacion, estado) VALUES
-('P01', 'Zona A1', 'disponible'),
-('P02', 'Zona A2', 'ocupado'),
-('P03', 'Zona B1', 'disponible'),
-('P04', 'Zona B2', 'disponible');
+('P001', 'Zona A', 'disponible'),
+('P002', 'Zona B', 'ocupado'),
+('P003', 'Zona C', 'disponible');
 
+-- Insertar datos ficticios en la tabla vehiculos
 INSERT INTO vehiculos (placa, tipo, propietario) VALUES
-('AAA123', 'automovil', 'Carlos Pérez'),
-('BBB456', 'motocicleta', 'Laura Gómez'),
-('CCC789', 'camioneta', 'Juan Rodríguez'),
-('DDD321', 'automovil', 'María López');
+('ABC123', 'automovil', 'Juan Perez'),
+('XYZ789', 'motocicleta', 'Maria Lopez'),
+('LMN456', 'camioneta', 'Carlos Garcia');
 
+-- Insertar datos ficticios en la tabla tarifas
 INSERT INTO tarifas (tipo_vehiculo, tarifa_hora, tiempo_gracia) VALUES
-('motocicleta', 5.00, 15),
 ('automovil', 10.00, 15),
+('motocicleta', 5.00, 15),
 ('camioneta', 15.00, 15);
 
+-- Insertar datos ficticios en la tabla ingresos
 INSERT INTO ingresos (id_vehiculo, id_puesto, fecha_ingreso, fecha_salida, tarifa_aplicada, multa) VALUES
-(1, 2, '2024-11-22 08:00:00', '2024-11-22 12:00:00', 40.00, 0.00),
-(2, 1, '2024-11-23 09:30:00', NULL, NULL, 0.00);
+(1, 2, '2023-10-01 08:00:00', '2023-10-01 10:00:00', 20.00, 0.00),
+(2, 1, '2023-10-02 09:00:00', '2023-10-02 11:00:00', 10.00, 0.00),
+(3, 3, '2023-10-03 07:00:00', '2023-10-03 09:00:00', 30.00, 0.00);
 
+-- Insertar datos ficticios en la tabla mensualidades
 INSERT INTO mensualidades (id_vehiculo, fecha_inicio, fecha_fin, horario_entrada, horario_salida) VALUES
-(3, '2024-11-01', '2024-11-30', '08:00:00', '20:00:00'),
-(4, '2024-11-15', '2024-12-15', '07:00:00', '19:00:00');
+(1, '2023-10-01', '2023-10-31', '08:00:00', '18:00:00'),
+(2, '2023-10-01', '2023-10-31', '09:00:00', '19:00:00'),
+(3, '2023-10-01', '2023-10-31', '07:00:00', '17:00:00');
 
+-- Insertar datos ficticios en la tabla multas
 INSERT INTO multas (id_ingreso, monto, fecha_generada, pagada) VALUES
-(1, 10.00, '2024-11-22 12:10:00', TRUE),
-(2, 20.00, '2024-11-23 12:00:00', FALSE);
+(1, 50.00, '2023-10-01 10:30:00', FALSE),
+(2, 30.00, '2023-10-02 11:30:00', TRUE),
+(3, 40.00, '2023-10-03 09:30:00', FALSE);
