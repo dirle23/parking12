@@ -125,14 +125,14 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="py-2 px-4"><span class="font-bold">Placa: </span>${vehiculo.placa}</div>
             <div class="py-2 px-4"><span class="font-bold">Tipo: </span>${vehiculo.tipo}</div>
             <div class="py-2 px-4"><span class="font-bold">Propietario: </span>${vehiculo.propietario}</div>
-            <div class="flex justify-center mt-4 space-x-4">
-                <button class="bg-color7 text-white p-2 rounded-full hover:bg-color6 transition duration-300" onclick="viewVehiculo(${vehiculo.id_vehiculo})">
+            <div class="flex justify-center mt-4 space-x-2">
+                <button class="flex bg-color5 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="viewVehiculo(${vehiculo.id_vehiculo})">
                     <i class="fas fa-eye"></i>
                 </button>
-                <button class="bg-color7 text-white p-2 rounded-full hover:bg-color6 transition duration-300" onclick="editVehiculo(${vehiculo.id_vehiculo})">
+                <button class="flex bg-color6 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="editVehiculo(${vehiculo.id_vehiculo})">
                     <i class="fas fa-edit"></i>
                 </button>
-                <button class="bg-color7 text-white p-2 rounded-full hover:bg-color6 transition duration-300" onclick="confirmDeleteVehiculo(${vehiculo.id_vehiculo})">
+                <button class="flex bg-color7 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="confirmDeleteVehiculo(${vehiculo.id_vehiculo})">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>

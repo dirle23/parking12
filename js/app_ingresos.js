@@ -1,10 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   const modal = document.getElementById("modal");
-  const modalVer = document.getElementById("modalVer");
-  const modalEliminar = document.getElementById("modalEliminar");
   const abrirModal = document.getElementById("openModal");
   const cerrarModal = document.getElementById("closeModal");
-  const cerrarModalVer = document.getElementById("closeModalVer");
   const btnEliminarConfirmar = document.getElementById("btnEliminarConfirmar");
   const btnEliminarCancelar = document.getElementById("btnEliminarCancelar");
   const dataForm = document.getElementById("dataForm");
@@ -17,18 +14,13 @@ document.addEventListener("DOMContentLoaded", function () {
   abrirModal.addEventListener("click", () => {
     modal.classList.remove("hidden");
     dataForm.reset();
-    document.getElementById("id").value = "";
+    document.getElementById("id_ingreso").value = "";
     cargarSelectores();  // Llamar a cargar selectores aquí
   });
 
   // Cerrar el modal de agregar
   cerrarModal.addEventListener("click", () => {
     modal.classList.add("hidden");
-  });
-
-  // Cerrar el modal de ver
-  cerrarModalVer.addEventListener("click", () => {
-    modalVer.classList.add("hidden");
   });
 
   // Cancelar la eliminación de un registro
@@ -43,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
       fetch("php/server_ingresos.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `action=delete&id=${currentIdToDelete}`,
+        body: `action=delete&id_ingreso=${currentIdToDelete}`,
       })
         .then((response) => response.json())
         .then((data) => {
@@ -70,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
     event.preventDefault();
 
     const formData = new FormData(dataForm);
-    const action = formData.get("id") ? "update" : "add";
+    const action = formData.get("id_ingreso") ? "update" : "add";
     formData.append("action", action);
 
     fetch("php/server_ingresos.php", {
@@ -118,11 +110,12 @@ document.addEventListener("DOMContentLoaded", function () {
           );
           row.innerHTML = `
             <div class="py-2 px-4 block md:table-cell">${registro.id_ingreso}</div>
-            <div class="py-2 px-4 block md:table-cell">${registro.placa}</div>
-            <div class="py-2 px-4 block md:table-cell">${registro.codigo_puesto}</div>
+            <div class="py-2 px-4 block md:table-cell">${registro.id_vehiculo}</div>
+            <div class="py-2 px-4 block md:table-cell">${registro.id_puesto}</div>
             <div class="py-2 px-4 block md:table-cell">${registro.fecha_ingreso}</div>
             <div class="py-2 px-4 block md:table-cell">${registro.fecha_salida || "N/A"}</div>
             <div class="py-2 px-4 block md:table-cell">${formatearPrecio(registro.tarifa_aplicada)}</div>
+            <div class="py-2 px-4 block md:table-cell">${formatearPrecio(registro.multa)}</div>
             <div class="py-2 px-4 block md:table-cell">
                 <button class="bg-green-500 text-white px-2 py-1 rounded-md" onclick="viewRegistro(${registro.id_ingreso})">Ver</button>
                 <button class="bg-yellow-500 text-white px-2 py-1 rounded-md" onclick="editRegistro(${registro.id_ingreso})">Editar</button>
@@ -150,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function () {
       fetch("php/server_vehiculo.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "action=fetch", // Asegúrate de tener una acción adecuada en el servidor
+        body: "action=fetch",
       })
         .then((response) => response.json())
         .then((data) => {
@@ -159,7 +152,7 @@ document.addEventListener("DOMContentLoaded", function () {
           data.forEach((vehiculo) => {
             const option = document.createElement("option");
             option.value = vehiculo.id_vehiculo;
-            option.textContent = vehiculo.placa; // Asumiendo que `placa` es un campo de la tabla `vehiculos`
+            option.textContent = vehiculo.placa;
             vehiculoSelect.appendChild(option);
           });
         })
@@ -172,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
       fetch("php/server_puesto.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "action=fetch", // Asegúrate de tener una acción adecuada en el servidor
+        body: "action=fetch",
       })
         .then((response) => response.json())
         .then((data) => {
@@ -181,7 +174,7 @@ document.addEventListener("DOMContentLoaded", function () {
           data.forEach((puesto) => {
             const option = document.createElement("option");
             option.value = puesto.id_puesto;
-            option.textContent = puesto.codigo; // Suponiendo que `codigo` es el campo que identifica el puesto
+            option.textContent = puesto.codigo;
             puestoSelect.appendChild(option);
           });
         })
@@ -189,4 +182,19 @@ document.addEventListener("DOMContentLoaded", function () {
           mostrarMensaje("error", "Error al cargar puestos. Inténtalo nuevamente.");
           console.error("Error:", error);
         })
-   
+    ]);
+  }
+
+  // Mostrar mensaje en el modal de mensajes
+  function mostrarMensaje(tipo, mensaje) {
+    mensajeTexto.textContent = mensaje;
+    modalMensaje.classList.remove("hidden");
+    setTimeout(() => {
+      modalMensaje.classList.add("hidden");
+    }, 3000);
+  }
+
+  // Cargar registros y selectores al cargar la página
+  fetchRegistros();
+  cargarSelectores();
+});

@@ -117,26 +117,38 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!response.ok) throw new Error('Network response was not ok');
             return response.json();
         })
-        .then(data => {
-            dataTable.innerHTML = '';
-            data.forEach(tarifa => {
-                const row = document.createElement('div');
-                row.classList.add('block', 'bg-white', 'md:table-row', 'mb-4', 'md:mb-0', 'border', 'border-gray-200', 'rounded-lg', 'shadow-sm', 'p-4', 'md:p-0', 'item-center' );
-                row.innerHTML = `
-                    <div class="py-2 px-4 block md:table-cell text-center"><span class="md:hidden font-bold">ID: </span>${tarifa.id_tarifa}</div>
-                    <div class="py-2 px-4 block md:table-cell text-center"><span class="md:hidden font-bold">Tipo de Vehículo: </span>${tarifa.tipo_vehiculo}</div>
-                    <div class="py-2 px-4 block md:table-cell text-center"><span class="md:hidden font-bold">Tarifa por Hora: </span>${tarifa.tarifa_hora}</div>
-                    <div class="py-2 px-4 block md:table-cell text-center"><span class="md:hidden font-bold">Tiempo de Gracia: </span>${tarifa.tiempo_gracia}</div>
-                    <div class="py-2 px-4 block md:table-cell flex flex-col md:flex-row md:justify-center space-y-2 md:space-y-0 md:space-x-2">
-                        <span class="md:hidden font-bold">Acciones: </span>
-                        <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-300" onclick="viewTarifa(${tarifa.id_tarifa})">Ver</button>
-                        <button class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-700 transition duration-300" onclick="editTarifa(${tarifa.id_tarifa})">Editar</button>
-                        <button class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-300" onclick="confirmDeleteTarifa(${tarifa.id_tarifa})">Eliminar</button>
-                    </div>
-                `;
-                dataTable.appendChild(row);
+        .then((data) => {
+            dataTable.innerHTML = "";
+            data.forEach((tarifa) => {
+              const card = document.createElement("div");
+              card.classList.add(
+                "bg-white",
+                "border",
+                "border-gray-200",
+                "rounded-lg",
+                "shadow-sm",
+                "p-4"
+              );
+              card.innerHTML = `
+                <div class="py-2 px-4"><span class="font-bold">ID: </span>${tarifa.id_tarifa}</div>
+                <div class="py-2 px-4"><span class="font-bold">Tipo de Vehículo: </span>${tarifa.tipo_vehiculo}</div>
+                <div class="py-2 px-4"><span class="font-bold">Tarifa por Hora: </span>${tarifa.tarifa_hora}</div>
+                <div class="py-2 px-4"><span class="font-bold">Tiempo de Gracia: </span>${tarifa.tiempo_gracia} minutos</div>
+                <div class="flex justify-center mt-4 space-x-2">
+                    <button class="flex bg-color5 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="viewTarifa(${tarifa.id_tarifa})">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="flex bg-color6 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="editTarifa(${tarifa.id_tarifa})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="flex bg-color7 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="confirmDeleteTarifa(${tarifa.id_tarifa})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+              `;
+              dataTable.appendChild(card);
             });
-        })
+          })
         .catch(error => {
             mostrarMensaje('error', 'Error al cargar tarifas. Inténtalo nuevamente.');
             console.error('Error:', error);

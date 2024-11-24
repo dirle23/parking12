@@ -77,15 +77,15 @@ INSERT INTO vehiculos (placa, tipo, propietario) VALUES
 
 -- Insertar datos ficticios en la tabla tarifas
 INSERT INTO tarifas (tipo_vehiculo, tarifa_hora, tiempo_gracia) VALUES
-('automovil', 10.00, 15),
-('motocicleta', 5.00, 15),
-('camioneta', 15.00, 15);
+('automovil', 2500, 15),
+('motocicleta', 1000, 15),
+('camioneta', 3000, 15);
 
 -- Insertar datos ficticios en la tabla ingresos
 INSERT INTO ingresos (id_vehiculo, id_puesto, fecha_ingreso, fecha_salida, tarifa_aplicada, multa) VALUES
-(1, 2, '2023-10-01 08:00:00', '2023-10-01 10:00:00', 20.00, 0.00),
-(2, 1, '2023-10-02 09:00:00', '2023-10-02 11:00:00', 10.00, 0.00),
-(3, 3, '2023-10-03 07:00:00', '2023-10-03 09:00:00', 30.00, 0.00);
+(1, 2, '2023-10-01 08:00:00', '2023-10-01 10:00:00', 2500, 0.00),
+(2, 1, '2023-10-02 09:00:00', '2023-10-02 11:00:00', 1000, 0.00),
+(3, 3, '2023-10-03 07:00:00', '2023-10-03 09:00:00', 3000, 0.00);
 
 -- Insertar datos ficticios en la tabla mensualidades
 INSERT INTO mensualidades (id_vehiculo, fecha_inicio, fecha_fin, horario_entrada, horario_salida) VALUES
