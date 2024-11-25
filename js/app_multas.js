@@ -97,39 +97,40 @@ document.addEventListener("DOMContentLoaded", function () {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: "action=fetch",
       })
-        .then((response) => response.json())
-        .then((data) => {
-          dataTable.innerHTML = "";
-          data.forEach((registro) => {
-            const row = document.createElement("div");
-            row.classList.add(
-              "block",
-              "bg-white",
-              "md:table-row",
-              "mb-4",
-              "md:mb-0",
-              "border",
-              "border-gray-200",
-              "rounded-lg",
-              "shadow-sm",
-              "p-4",
-              "md:p-0"
-            );
-            row.innerHTML = `
-              <div class="py-2 px-4 block md:table-cell">${registro.id_multa}</div>
-              <div class="py-2 px-4 block md:table-cell">${registro.id_ingreso}</div>
-              <div class="py-2 px-4 block md:table-cell">${registro.monto}</div>
-              <div class="py-2 px-4 block md:table-cell">${registro.fecha_generada}</div>
-              <div class="py-2 px-4 block md:table-cell">${registro.pagada ? "Sí" : "No"}</div>
-              <div class="py-2 px-4 block md:table-cell">
-                  <button class="bg-green-500 text-white px-2 py-1 rounded-md" onclick="viewRegistro(${registro.id_multa})">Ver</button>
-                  <button class="bg-yellow-500 text-white px-2 py-1 rounded-md" onclick="editRegistro(${registro.id_multa})">Editar</button>
-                  <button class="bg-red-500 text-white px-2 py-1 rounded-md" onclick="confirmDeleteRegistro(${registro.id_multa})">Eliminar</button>
-              </div>
-            `;
-            dataTable.appendChild(row);
-          });
-        })
+      .then((response) => response.json())
+      .then((data) => {
+        dataTable.innerHTML = "";
+        data.forEach((registro) => {
+          const card = document.createElement("div");
+          card.classList.add(
+            "bg-white",
+            "border",
+            "border-gray-200",
+            "rounded-lg",
+            "shadow-sm",
+            "p-4"
+          );
+          card.innerHTML = `
+            <div class="py-2 px-4"><span class="font-bold">ID: </span>${registro.id_multa}</div>
+            <div class="py-2 px-4"><span class="font-bold">ID Ingreso: </span>${registro.id_ingreso}</div>
+            <div class="py-2 px-4"><span class="font-bold">Monto: </span>${registro.monto}</div>
+            <div class="py-2 px-4"><span class="font-bold">Fecha Generada: </span>${registro.fecha_generada}</div>
+            <div class="py-2 px-4"><span class="font-bold">Pagada: </span>${registro.pagada ? "Sí" : "No"}</div>
+            <div class="flex justify-center mt-4 space-x-2">
+                <button class="flex bg-color5 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="viewRegistro(${registro.id_multa})">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button class="flex bg-color6 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="editRegistro(${registro.id_multa})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="flex bg-color7 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="confirmDeleteRegistro(${registro.id_multa})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+          `;
+          dataTable.appendChild(card);
+        });
+      })
         .catch((error) => {
           mostrarMensaje("error", "Error al cargar los registros. Inténtalo nuevamente.");
           console.error("Error:", error);

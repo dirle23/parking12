@@ -1,7 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // Elementos del DOM
   const modal = document.getElementById("modal");
+  const modalVer = document.getElementById("modalVer");
+  const modalEliminar = document.getElementById("modalEliminar");
   const abrirModal = document.getElementById("openModal");
   const cerrarModal = document.getElementById("closeModal");
+  const cerrarModalVer = document.getElementById("closeModalVer");
   const btnEliminarConfirmar = document.getElementById("btnEliminarConfirmar");
   const btnEliminarCancelar = document.getElementById("btnEliminarCancelar");
   const dataForm = document.getElementById("dataForm");
@@ -10,29 +14,33 @@ document.addEventListener("DOMContentLoaded", function () {
   const mensajeTexto = document.getElementById("mensajeTexto");
   let currentIdToDelete = null;
 
-  // Abrir el modal para agregar un registro
+  // Abrir el modal para agregar un nuevo ingreso
   abrirModal.addEventListener("click", () => {
     modal.classList.remove("hidden");
     dataForm.reset();
     document.getElementById("id_ingreso").value = "";
-    cargarSelectores();  // Llamar a cargar selectores aquí
   });
 
-  // Cerrar el modal de agregar
+  // Cerrar el modal de agregar/editar ingreso
   cerrarModal.addEventListener("click", () => {
     modal.classList.add("hidden");
   });
 
-  // Cancelar la eliminación de un registro
+  // Cerrar el modal de ver ingreso
+  cerrarModalVer.addEventListener("click", () => {
+    modalVer.classList.add("hidden");
+  });
+
+  // Cancelar la eliminación de un ingreso
   btnEliminarCancelar.addEventListener("click", () => {
     modalEliminar.classList.add("hidden");
     currentIdToDelete = null;
   });
 
-  // Confirmar la eliminación de un registro
+  // Confirmar la eliminación de un ingreso
   btnEliminarConfirmar.addEventListener("click", () => {
     if (currentIdToDelete) {
-      fetch("php/server_ingresos.php", {
+      fetch("/php/server_ingresos.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `action=delete&id_ingreso=${currentIdToDelete}`,
@@ -40,14 +48,16 @@ document.addEventListener("DOMContentLoaded", function () {
         .then((response) => response.json())
         .then((data) => {
           mostrarMensaje(data.success ? "exito" : "error", data.message);
-          if (data.success) {
-            fetchRegistros();
-          }
+          if (data.success) fetchIngresos();
+          
           modalEliminar.classList.add("hidden");
           currentIdToDelete = null;
         })
         .catch((error) => {
-          mostrarMensaje("error", "Error al eliminar el registro. Inténtalo nuevamente.");
+          mostrarMensaje(
+            "error",
+            "Error al eliminar ingreso. Inténtalo nuevamente."
+          );
           console.error("Error:", error);
           modalEliminar.classList.add("hidden");
           currentIdToDelete = null;
@@ -55,7 +65,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Enviar el formulario
+  // Cerrar modales al hacer clic fuera de ellos
+  window.addEventListener("click", function (event) {
+    if (event.target === modal) {
+      modal.classList.add("hidden");
+    }
+    if (event.target === modalVer) {
+      modalVer.classList.add("hidden");
+    }
+    if (event.target === modalEliminar) {
+      modalEliminar.classList.add("hidden");
+    }
+  });
+
+  // Enviar datos del formulario de ingreso
   dataForm.addEventListener("submit", enviarDatos);
 
   function enviarDatos(event) {
@@ -65,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const action = formData.get("id_ingreso") ? "update" : "add";
     formData.append("action", action);
 
-    fetch("php/server_ingresos.php", {
+    fetch("/php/server_ingresos.php", {
       method: "POST",
       body: formData,
     })
@@ -74,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
         mostrarMensaje(data.success ? "exito" : "error", data.message);
         if (data.success) {
           modal.classList.add("hidden");
-          fetchRegistros();
+          fetchIngresos();
         }
       })
       .catch((error) => {
@@ -83,107 +106,120 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  // Función para obtener y mostrar los registros
-  function fetchRegistros() {
-    fetch("php/server_ingresos.php", {
+  // Obtener y mostrar todos los ingresos
+  function fetchIngresos() {
+    fetch("/php/server_ingresos.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: "action=fetch",
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) throw new Error('Network response was not ok')
+        return response.json();
+      })
       .then((data) => {
         dataTable.innerHTML = "";
-        data.forEach((registro) => {
-          const row = document.createElement("div");
-          row.classList.add(
-            "block",
+        data.forEach((ingreso) => {
+          const card = document.createElement("div");
+          card.classList.add(
             "bg-white",
-            "md:table-row",
-            "mb-4",
-            "md:mb-0",
             "border",
             "border-gray-200",
             "rounded-lg",
             "shadow-sm",
-            "p-4",
-            "md:p-0"
+            "p-4"
           );
-          row.innerHTML = `
-            <div class="py-2 px-4 block md:table-cell">${registro.id_ingreso}</div>
-            <div class="py-2 px-4 block md:table-cell">${registro.id_vehiculo}</div>
-            <div class="py-2 px-4 block md:table-cell">${registro.id_puesto}</div>
-            <div class="py-2 px-4 block md:table-cell">${registro.fecha_ingreso}</div>
-            <div class="py-2 px-4 block md:table-cell">${registro.fecha_salida || "N/A"}</div>
-            <div class="py-2 px-4 block md:table-cell">${formatearPrecio(registro.tarifa_aplicada)}</div>
-            <div class="py-2 px-4 block md:table-cell">${formatearPrecio(registro.multa)}</div>
-            <div class="py-2 px-4 block md:table-cell">
-                <button class="bg-green-500 text-white px-2 py-1 rounded-md" onclick="viewRegistro(${registro.id_ingreso})">Ver</button>
-                <button class="bg-yellow-500 text-white px-2 py-1 rounded-md" onclick="editRegistro(${registro.id_ingreso})">Editar</button>
-                <button class="bg-red-500 text-white px-2 py-1 rounded-md" onclick="confirmDeleteRegistro(${registro.id_ingreso})">Eliminar</button>
+          card.innerHTML = `
+            <div class="py-2 px-4"><span class="font-bold">ID: </span>${ingreso.id_ingreso}</div>
+            <div class="py-2 px-4"><span class="font-bold">Vehículo: </span>${ingreso.vehiculo}</div>
+            <div class="py-2 px-4"><span class="font-bold">Puesto: </span>${ingreso.puesto}</div>
+            <div class="py-2 px-4"><span class="font-bold">Fecha Ingreso: </span>${ingreso.fecha_ingreso}</div>
+            <div class="py-2 px-4"><span class="font-bold">Fecha Salida: </span>${ingreso.fecha_salida}</div>
+            <div class="py-2 px-4"><span class="font-bold">Tarifa Aplicada: </span>${ingreso.tarifa_aplicada}</div>
+            <div class="py-2 px-4"><span class="font-bold">Multa: </span>${ingreso.multa}</div>
+            <div class="flex justify-center mt-4 space-x-2">
+                <button class="flex bg-color5 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="viewIngreso(${ingreso.id_ingreso})">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button class="flex bg-color6 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="editIngreso(${ingreso.id_ingreso})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="flex bg-color7 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="confirmDeleteIngreso(${ingreso.id_ingreso})">
+                    <i class="fas fa-trash"></i>
+                </button>
             </div>
           `;
-          dataTable.appendChild(row);
+          dataTable.appendChild(card);
         });
       })
       .catch((error) => {
-        mostrarMensaje("error", "Error al cargar los registros. Inténtalo nuevamente.");
+        mostrarMensaje(
+          "error",
+          "Error al cargar ingresos. Inténtalo nuevamente."
+        );
         console.error("Error:", error);
       });
   }
 
-  // Función para formatear el precio
-  function formatearPrecio(precio) {
-    return precio.toLocaleString("es-ES", { minimumFractionDigits: 2 });
-  }
-
-  // Función para cargar los selectores de vehículos y puestos
-  function cargarSelectores() {
-    return Promise.all([
-      // Cargar vehículos
-      fetch("php/server_vehiculo.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "action=fetch",
+  // Editar un ingreso
+  window.editIngreso = function (id) {
+    fetch("/php/server_ingresos.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `action=fetch&id_ingreso=${id}`,
+    })
+      .then((response) => response.json())
+      .then((ingreso) => {
+        document.getElementById("id_ingreso").value = ingreso.id_ingreso;
+        document.getElementById("id_vehiculo").value = ingreso.id_vehiculo;
+        document.getElementById("id_puesto").value = ingreso.id_puesto;
+        document.getElementById("fecha_ingreso").value = ingreso.fecha_ingreso;
+        document.getElementById("fecha_salida").value = ingreso.fecha_salida;
+        document.getElementById("tarifa_aplicada").value = ingreso.tarifa_aplicada;
+        document.getElementById("multa").value = ingreso.multa;
+        modal.classList.remove("hidden");
       })
-        .then((response) => response.json())
-        .then((data) => {
-          const vehiculoSelect = document.getElementById("id_vehiculo");
-          vehiculoSelect.innerHTML = '<option value="">Selecciona un vehículo</option>';
-          data.forEach((vehiculo) => {
-            const option = document.createElement("option");
-            option.value = vehiculo.id_vehiculo;
-            option.textContent = vehiculo.placa;
-            vehiculoSelect.appendChild(option);
-          });
-        })
-        .catch((error) => {
-          mostrarMensaje("error", "Error al cargar vehículos. Inténtalo nuevamente.");
-          console.error("Error:", error);
-        }),
+      .catch((error) => {
+        mostrarMensaje(
+          "error",
+          "Error al cargar ingreso. Inténtalo nuevamente."
+        );
+        console.error("Error:", error);
+      });
+  };
 
-      // Cargar puestos
-      fetch("php/server_puesto.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "action=fetch",
+  // Confirmar eliminación de un ingreso
+  window.confirmDeleteIngreso = function (id) {
+    currentIdToDelete = id;
+    modalEliminar.classList.remove("hidden");
+  };
+
+  // Ver detalles de un ingreso
+  window.viewIngreso = function (id) {
+    fetch("/php/server_ingresos.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `action=fetch&id_ingreso=${id}`,
+    })
+      .then((response) => response.json())
+      .then((ingreso) => {
+        document.getElementById("verId").textContent = ingreso.id_ingreso;
+        document.getElementById("verVehiculo").textContent = ingreso.vehiculo;
+        document.getElementById("verPuesto").textContent = ingreso.puesto;
+        document.getElementById("verFechaIngreso").textContent = ingreso.fecha_ingreso;
+        document.getElementById("verFechaSalida").textContent = ingreso.fecha_salida;
+        document.getElementById("verTarifaAplicada").textContent = ingreso.tarifa_aplicada;
+        document.getElementById("verMulta").textContent = ingreso.multa;
+        modalVer.classList.remove("hidden");
       })
-        .then((response) => response.json())
-        .then((data) => {
-          const puestoSelect = document.getElementById("id_puesto");
-          puestoSelect.innerHTML = '<option value="">Selecciona un puesto</option>';
-          data.forEach((puesto) => {
-            const option = document.createElement("option");
-            option.value = puesto.id_puesto;
-            option.textContent = puesto.codigo;
-            puestoSelect.appendChild(option);
-          });
-        })
-        .catch((error) => {
-          mostrarMensaje("error", "Error al cargar puestos. Inténtalo nuevamente.");
-          console.error("Error:", error);
-        })
-    ]);
-  }
+      .catch((error) => {
+        mostrarMensaje(
+          "error",
+          "Error al cargar ingreso. Inténtalo nuevamente."
+        );
+        console.error("Error:", error);
+      });
+  };
 
   // Mostrar mensaje en el modal de mensajes
   function mostrarMensaje(tipo, mensaje) {
@@ -194,7 +230,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 3000);
   }
 
-  // Cargar registros y selectores al cargar la página
-  fetchRegistros();
-  cargarSelectores();
+  // Cargar ingresos al cargar la página
+  fetchIngresos();
 });

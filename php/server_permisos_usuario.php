@@ -1,8 +1,7 @@
 <?php
+// Configuración de cabecera
 header('Content-Type: application/json');
-$dsn = 'mysql:host=localhost;dbname=sistema_facturacion;charset=utf8';
-$username = 'root';
-$password = '';
+include 'config.php';
 
 try {
     $pdo = new PDO($dsn, $username, $password);

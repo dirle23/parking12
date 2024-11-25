@@ -1,19 +1,13 @@
 <?php
+// Configuración de cabecera
 header('Content-Type: application/json');
 include 'config.php';
-
-// Manejar solicitudes OPTIONS
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type, Authorization');
-    exit(0);
-}
 
 try {
     $pdo = new PDO($dsn, $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    // Obtener los valores del campo enum 'estado'
     $stmtEnum = $pdo->prepare("SELECT COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'puestos' AND COLUMN_NAME = 'estado'");
     $stmtEnum->execute();
     $column_info = $stmtEnum->fetch(PDO::FETCH_ASSOC);
@@ -40,7 +34,7 @@ try {
             }
 
             $stmt = $pdo->prepare("INSERT INTO puestos (codigo, ubicacion, estado) VALUES (?, ?, ?)");
-            $stmt->execute([$ubicacion, $codigo, $estado]);
+            $stmt->execute([$codigo, $ubicacion, $estado]);
             echo json_encode(['success' => true, 'message' => 'Puesto creado con éxito.']);
             break;
 
@@ -97,7 +91,10 @@ try {
                 }
             }
             break;
-            
+
+        case 'get_enum_values':
+            echo json_encode(['success' => true, 'enum_values' => $enum_values]);
+            break;
 
         default:
             echo json_encode(['success' => false, 'message' => 'Acción no válida.']);
