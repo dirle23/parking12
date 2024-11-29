@@ -160,6 +160,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("id_vehiculo").value = vehiculo.id_vehiculo;
         document.getElementById("placa").value = vehiculo.placa;
         document.getElementById("tipo").value = vehiculo.tipo;
+        document.getElementById("propietario").value = vehiculo.propietario;
         modal.classList.remove("hidden");
       })
       .catch((error) => {
@@ -187,6 +188,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("verId").textContent = vehiculo.id_vehiculo;
         document.getElementById("verPlaca").textContent = vehiculo.placa;
         document.getElementById("verTipo").textContent = vehiculo.tipo;
+        document.getElementById("verPropietario").textContent = vehiculo.propietario;
         modalVer.classList.remove("hidden");
       })
       .catch((error) => {

@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const estadoSelect = document.getElementById('estado');
   let currentIdToDelete = null;
 
+  // Abrir el modal para agregar un nuevo puesto
   abrirModal.addEventListener('click', () => {
     modal.classList.remove('hidden');
     dataForm.reset();
@@ -21,19 +22,23 @@ document.addEventListener('DOMContentLoaded', function () {
     cargarEstados();
   });
 
+  // Cerrar el modal de agregar/editar puesto
   cerrarModal.addEventListener('click', () => {
     modal.classList.add('hidden');
   });
 
+  // Cerrar el modal de ver puesto
   cerrarModalVer.addEventListener('click', () => {
     modalVer.classList.add('hidden');
   });
 
+  // Cerrar el modal de eliminación
   btnEliminarCancelar.addEventListener('click', () => {
     modalEliminar.classList.add('hidden');
     currentIdToDelete = null;
   });
 
+  // Confirmar eliminación de puesto
   btnEliminarConfirmar.addEventListener('click', () => {
     if (currentIdToDelete) {
       fetch("/php/server_puesto.php", {
@@ -44,16 +49,12 @@ document.addEventListener('DOMContentLoaded', function () {
         .then((response) => response.json())
         .then((data) => {
           mostrarMensaje(data.success ? "exito" : "error", data.message);
-          if (data.success) fetchPuestos();
-          
+          if (data.success) fetchPuestos();  // Recargar los puestos
           modalEliminar.classList.add('hidden');
           currentIdToDelete = null;
         })
         .catch((error) => {
-          mostrarMensaje(
-            "error",
-            "Error al eliminar puesto. Inténtalo nuevamente."
-          );
+          mostrarMensaje("error", "Error al eliminar puesto. Inténtalo nuevamente.");
           console.error("Error:", error);
           modalEliminar.classList.add('hidden');
           currentIdToDelete = null;
@@ -61,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // Hacer que el modal se cierre al hacer click fuera del mismo
   window.addEventListener('click', function (event) {
     if (event.target === modal) {
       modal.classList.add('hidden');
@@ -73,13 +75,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // Enviar datos del formulario (agregar/editar puesto)
   dataForm.addEventListener('submit', enviarDatos);
 
   function enviarDatos(event) {
     event.preventDefault();
 
     const formData = new FormData(dataForm);
-    const action = formData.get("id_puesto") ? "update" : "add";
+    const action = formData.get("id_puesto") ? "update" : "add";  // Detectar si es agregar o actualizar
     formData.append("action", action);
 
     fetch("/php/server_puesto.php", {
@@ -91,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
         mostrarMensaje(data.success ? "exito" : "error", data.message);
         if (data.success) {
           modal.classList.add('hidden');
-          fetchPuestos();
+          fetchPuestos();  // Recargar los puestos
         }
       })
       .catch((error) => {
@@ -100,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   }
 
+  // Obtener puestos desde el servidor
   function fetchPuestos() {
     fetch("/php/server_puesto.php", {
       method: "POST",
@@ -107,50 +111,107 @@ document.addEventListener('DOMContentLoaded', function () {
       body: "action=fetch",
     })
       .then((response) => {
-        if (!response.ok) throw new Error('Network response was not ok')
+        if (!response.ok) throw new Error('Network response was not ok');
         return response.json();
       })
       .then((data) => {
-        dataTable.innerHTML = "";
-        data.forEach((puesto) => {
-          const card = document.createElement("div");
-          card.classList.add(
-            "bg-white",
-            "border",
-            "border-gray-200",
-            "rounded-lg",
-            "shadow-sm",
-            "p-4"
-          );
-          card.innerHTML = `
-            <div class="py-2 px-4"><span class="font-bold">ID: </span>${puesto.id_puesto}</div>
-            <div class="py-2 px-4"><span class="font-bold">Código: </span>${puesto.codigo}</div>
-            <div class="py-2 px-4"><span class="font-bold">Ubicación: </span>${puesto.ubicacion}</div>
-            <div class="py-2 px-4"><span class="font-bold">Estado: </span>${puesto.estado}</div>
-            <div class="flex justify-center mt-4 space-x-2">
-                <button class="flex bg-color5 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="viewPuesto(${puesto.id_puesto})">
-                    <i class="fas fa-eye"></i>
-                </button>
-                <button class="flex bg-color6 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="editPuesto(${puesto.id_puesto})">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button class="flex bg-color7 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="confirmDeletePuesto(${puesto.id_puesto})">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-          `;
-          dataTable.appendChild(card);
-        });
+        // Verificar si la respuesta es válida
+        if (data.success && Array.isArray(data.puestos)) {
+          dataTable.innerHTML = "";  // Limpiar la tabla antes de agregar nuevos puestos.
+          let puestoOcupadoDetectado = false;
+
+          data.puestos.forEach((puesto) => {
+            // Verificar si el puesto está ocupado
+            if (puesto.estado === "ocupado") {
+              puestoOcupadoDetectado = true;
+            }
+
+            // Crear la tarjeta del puesto
+            const card = document.createElement("div");
+            card.classList.add("bg-white", "border", "border-gray-200", "rounded-lg", "shadow-sm", "p-4");
+            card.innerHTML = `
+              <div class="py-2 px-4"><span class="font-bold">ID: </span>${puesto.id_puesto}</div>
+              <div class="py-2 px-4"><span class="font-bold">Código: </span>${puesto.codigo}</div>
+              <div class="py-2 px-4"><span class="font-bold">Ubicación: </span>${puesto.ubicacion}</div>
+              <div class="py-2 px-4"><span class="font-bold">Estado: </span>${puesto.estado}</div>
+              <div class="flex justify-center mt-4 space-x-2">
+                  <button class="flex bg-color5 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="viewPuesto(${puesto.id_puesto})">
+                      <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="flex bg-color6 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="editPuesto(${puesto.id_puesto})">
+                      <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="flex bg-color7 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="confirmDeletePuesto(${puesto.id_puesto})">
+                      <i class="fas fa-trash"></i>
+                  </button>
+              </div>
+            `;
+            dataTable.appendChild(card);
+          });
+
+          // Mostrar alerta si algún puesto está ocupado
+          if (puestoOcupadoDetectado) {
+            mostrarAlertaOcupado();
+          }
+        } else {
+          console.error("Error al cargar puestos. La respuesta del servidor no es válida.");
+          mostrarMensaje("error", "Error al cargar puestos.");
+        }
       })
       .catch((error) => {
-        mostrarMensaje(
-          "error",
-          "Error al cargar puestos. Inténtalo nuevamente."
-        );
+        mostrarMensaje("error", "Error al cargar puestos. Inténtalo nuevamente.");
         console.error("Error:", error);
       });
   }
 
+  // Función para mostrar la alerta de puestos ocupados
+  function mostrarAlertaOcupado() {
+    alert("¡Atención! Hay un puesto ocupado.");
+    modalMensaje.classList.remove('hidden');
+    mensajeTexto.textContent = "¡Atención! Hay un puesto ocupado.";
+    setTimeout(() => {
+      modalMensaje.classList.add('hidden');
+    }, 3000);
+  }
+
+  // Función para mostrar un mensaje en el modal
+  function mostrarMensaje(tipo, mensaje) {
+    mensajeTexto.textContent = mensaje;
+    modalMensaje.classList.remove('hidden');
+    setTimeout(() => {
+      modalMensaje.classList.add('hidden');
+    }, 3000);
+  }
+
+  // Función para cargar los estados en el formulario
+  function cargarEstados(selectedEstado = null) {
+    fetch("/php/server_puesto.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "action=get_enum_values",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          estadoSelect.innerHTML = "";
+          data.enum_values.forEach((value) => {
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = value.charAt(0).toUpperCase() + value.slice(1);
+            if (value === selectedEstado) {
+              option.selected = true;
+            }
+            estadoSelect.appendChild(option);
+          });
+        } else {
+          mostrarMensaje("error", "Error al cargar los valores de estado.");
+        }
+      })
+      .catch((error) => {
+        mostrarMensaje("error", "Error al cargar los valores de estado.");
+        console.error("Error:", error);
+      });
+  }
   window.editPuesto = function (id) {
     fetch("/php/server_puesto.php", {
       method: "POST",
@@ -238,6 +299,6 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error("Error:", error);
       });
   }
-
+  // Cargar los puestos al cargar la página
   fetchPuestos();
 });

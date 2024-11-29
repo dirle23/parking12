@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Elementos del DOM
   const modal = document.getElementById("modal");
   const modalVer = document.getElementById("modalVer");
   const modalEliminar = document.getElementById("modalEliminar");
@@ -14,33 +13,29 @@ document.addEventListener("DOMContentLoaded", function () {
   const mensajeTexto = document.getElementById("mensajeTexto");
   let currentIdToDelete = null;
 
-  // Abrir el modal para agregar un nuevo ingreso
   abrirModal.addEventListener("click", () => {
     modal.classList.remove("hidden");
     dataForm.reset();
     document.getElementById("id_ingreso").value = "";
+    llenarSelectores();
   });
 
-  // Cerrar el modal de agregar/editar ingreso
   cerrarModal.addEventListener("click", () => {
     modal.classList.add("hidden");
   });
 
-  // Cerrar el modal de ver ingreso
   cerrarModalVer.addEventListener("click", () => {
     modalVer.classList.add("hidden");
   });
 
-  // Cancelar la eliminación de un ingreso
   btnEliminarCancelar.addEventListener("click", () => {
     modalEliminar.classList.add("hidden");
     currentIdToDelete = null;
   });
 
-  // Confirmar la eliminación de un ingreso
   btnEliminarConfirmar.addEventListener("click", () => {
     if (currentIdToDelete) {
-      fetch("/php/server_ingresos.php", {
+      fetch("/php/server_ingreso.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `action=delete&id_ingreso=${currentIdToDelete}`,
@@ -65,7 +60,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Cerrar modales al hacer clic fuera de ellos
   window.addEventListener("click", function (event) {
     if (event.target === modal) {
       modal.classList.add("hidden");
@@ -78,7 +72,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Enviar datos del formulario de ingreso
   dataForm.addEventListener("submit", enviarDatos);
 
   function enviarDatos(event) {
@@ -88,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const action = formData.get("id_ingreso") ? "update" : "add";
     formData.append("action", action);
 
-    fetch("/php/server_ingresos.php", {
+    fetch("/php/server_ingreso.php", {
       method: "POST",
       body: formData,
     })
@@ -106,9 +99,8 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  // Obtener y mostrar todos los ingresos
   function fetchIngresos() {
-    fetch("/php/server_ingresos.php", {
+    fetch("/php/server_ingreso.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: "action=fetch",
@@ -131,22 +123,17 @@ document.addEventListener("DOMContentLoaded", function () {
           );
           card.innerHTML = `
             <div class="py-2 px-4"><span class="font-bold">ID: </span>${ingreso.id_ingreso}</div>
-            <div class="py-2 px-4"><span class="font-bold">Vehículo: </span>${ingreso.vehiculo}</div>
-            <div class="py-2 px-4"><span class="font-bold">Puesto: </span>${ingreso.puesto}</div>
+            <div class="py-2 px-4"><span class="font-bold">ID Vehículo: </span>${ingreso.id_vehiculo}</div>
+            <div class="py-2 px-4"><span class="font-bold">ID Puesto: </span>${ingreso.id_puesto}</div>
             <div class="py-2 px-4"><span class="font-bold">Fecha Ingreso: </span>${ingreso.fecha_ingreso}</div>
             <div class="py-2 px-4"><span class="font-bold">Fecha Salida: </span>${ingreso.fecha_salida}</div>
             <div class="py-2 px-4"><span class="font-bold">Tarifa Aplicada: </span>${ingreso.tarifa_aplicada}</div>
             <div class="py-2 px-4"><span class="font-bold">Multa: </span>${ingreso.multa}</div>
             <div class="flex justify-center mt-4 space-x-2">
-                <button class="flex bg-color5 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="viewIngreso(${ingreso.id_ingreso})">
-                    <i class="fas fa-eye"></i>
-                </button>
-                <button class="flex bg-color6 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="editIngreso(${ingreso.id_ingreso})">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button class="flex bg-color7 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="confirmDeleteIngreso(${ingreso.id_ingreso})">
-                    <i class="fas fa-trash"></i>
-                </button>
+                
+                <button class="flex bg-color5 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="viewIngreso(${ingreso.id_ingreso})"><i class="fas fa-eye"></i></button>
+                <button class="flex bg-color6 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="editIngreso(${ingreso.id_ingreso})"><i class="fas fa-edit"></i></button>
+                <button class="flex bg-color7 text-white p-2 rounded-normal hover:bg-color6 transition duration-300" onclick="confirmDeleteIngreso(${ingreso.id_ingreso})"><i class="fas fa-trash"></i></button>
             </div>
           `;
           dataTable.appendChild(card);
@@ -161,9 +148,8 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  // Editar un ingreso
   window.editIngreso = function (id) {
-    fetch("/php/server_ingresos.php", {
+    fetch("/php/server_ingreso.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `action=fetch&id_ingreso=${id}`,
@@ -188,15 +174,13 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   };
 
-  // Confirmar eliminación de un ingreso
   window.confirmDeleteIngreso = function (id) {
     currentIdToDelete = id;
     modalEliminar.classList.remove("hidden");
   };
 
-  // Ver detalles de un ingreso
   window.viewIngreso = function (id) {
-    fetch("/php/server_ingresos.php", {
+    fetch("/php/server_ingreso.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `action=fetch&id_ingreso=${id}`,
@@ -204,8 +188,8 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((response) => response.json())
       .then((ingreso) => {
         document.getElementById("verId").textContent = ingreso.id_ingreso;
-        document.getElementById("verVehiculo").textContent = ingreso.vehiculo;
-        document.getElementById("verPuesto").textContent = ingreso.puesto;
+        document.getElementById("verIdVehiculo").textContent = ingreso.id_vehiculo;
+        document.getElementById("verIdPuesto").textContent = ingreso.id_puesto;
         document.getElementById("verFechaIngreso").textContent = ingreso.fecha_ingreso;
         document.getElementById("verFechaSalida").textContent = ingreso.fecha_salida;
         document.getElementById("verTarifaAplicada").textContent = ingreso.tarifa_aplicada;
@@ -221,7 +205,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   };
 
-  // Mostrar mensaje en el modal de mensajes
   function mostrarMensaje(tipo, mensaje) {
     mensajeTexto.textContent = mensaje;
     modalMensaje.classList.remove("hidden");
@@ -230,6 +213,61 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 3000);
   }
 
-  // Cargar ingresos al cargar la página
+  function llenarSelectores() {
+    fetch("/php/server_vehiculo.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "action=fetch",
+    })
+      .then((response) => response.json())
+      .then((vehiculos) => {
+        const vehiculoSelect = document.getElementById("id_vehiculo");
+        vehiculoSelect.innerHTML = "";
+        vehiculos.forEach((vehiculo) => {
+          const option = document.createElement("option");
+          option.value = vehiculo.id_vehiculo;
+          option.textContent = `${vehiculo.id_vehiculo} - ${vehiculo.placa}`;
+          vehiculoSelect.appendChild(option);
+        });
+      })
+      .catch((error) => {
+        console.error("Error al cargar vehículos:", error);
+      });
+  
+    // Obtener solo los puestos disponibles (estado != 'ocupado')
+    fetch("/php/server_puesto.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "action=fetch",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data); // Verifica la estructura completa de los datos
+  
+        // Verifica que la respuesta sea un objeto con la propiedad 'puestos' que sea un array
+        if (data.success && Array.isArray(data.puestos)) {
+          const puestoSelect = document.getElementById("id_puesto");
+          puestoSelect.innerHTML = ""; // Limpiar el select
+  
+          // Filtrar solo los puestos que no están ocupados
+          const puestosDisponibles = data.puestos.filter(puesto => puesto.estado !== "ocupado");
+  
+          // Agregar solo los puestos disponibles al select
+          puestosDisponibles.forEach((puesto) => {
+            const option = document.createElement("option");
+            option.value = puesto.id_puesto;
+            option.textContent = `${puesto.id_puesto} - ${puesto.codigo}`;
+            puestoSelect.appendChild(option);
+          });
+        } else {
+          console.error("La respuesta no contiene un array en 'puestos':", data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error al cargar puestos:", error);
+      });
+  }
+  
+  
   fetchIngresos();
 });

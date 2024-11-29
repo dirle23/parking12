@@ -64,14 +64,15 @@ try {
 
         case 'fetch':
             if (isset($_POST['id_puesto'])) {
+                // Obtener un puesto específico
                 $id_puesto = $_POST['id_puesto'];
-        
+
                 $stmt = $pdo->prepare("SELECT * FROM puestos WHERE id_puesto = ?");
                 $stmt->execute([$id_puesto]);
                 $puesto = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
                 if ($puesto) {
-                    $puesto['enum_values'] = $enum_values; 
+                    $puesto['enum_values'] = $enum_values;
                     echo json_encode($puesto);
                 } else {
                     echo json_encode(['success' => false, 'message' => 'Puesto no encontrado.']);
@@ -80,12 +81,27 @@ try {
                 // Obtener todos los puestos
                 $stmt = $pdo->query("SELECT * FROM puestos");
                 $puestos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
                 if ($puestos) {
+                    $puestos_ocupados = false;  // Variable para indicar si hay puestos ocupados
+
                     foreach ($puestos as &$puesto) {
-                        $puesto['enum_values'] = $enum_values;  
+                        if ($puesto['estado'] === 'ocupado') {
+                            $puestos_ocupados = true;  // Marcar que hay puestos ocupados
+                        }
+                        $puesto['enum_values'] = $enum_values;  // Añadir los valores del enum al puesto
                     }
-                    echo json_encode($puestos);
+
+                    // Si hay puestos ocupados, enviar una alerta en el mensaje
+                    if ($puestos_ocupados) {
+                        echo json_encode([
+                            'success' => true,
+                            'message' => '¡Atención! Hay puestos ocupados.',
+                            'puestos' => $puestos
+                        ]);
+                    } else {
+                        echo json_encode($puestos);  // No hay puestos ocupados, devolver la lista normal
+                    }
                 } else {
                     echo json_encode(['success' => false, 'message' => 'No se encontraron puestos.']);
                 }
