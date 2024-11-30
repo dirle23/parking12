@@ -118,14 +118,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Verificar si la respuesta es válida
         if (data.success && Array.isArray(data.puestos)) {
           dataTable.innerHTML = "";  // Limpiar la tabla antes de agregar nuevos puestos.
-          let puestoOcupadoDetectado = false;
 
           data.puestos.forEach((puesto) => {
-            // Verificar si el puesto está ocupado
-            if (puesto.estado === "ocupado") {
-              puestoOcupadoDetectado = true;
-            }
-
             // Crear la tarjeta del puesto
             const card = document.createElement("div");
             card.classList.add("bg-white", "border", "border-gray-200", "rounded-lg", "shadow-sm", "p-4");
@@ -148,11 +142,6 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
             dataTable.appendChild(card);
           });
-
-          // Mostrar alerta si algún puesto está ocupado
-          if (puestoOcupadoDetectado) {
-            mostrarAlertaOcupado();
-          }
         } else {
           console.error("Error al cargar puestos. La respuesta del servidor no es válida.");
           mostrarMensaje("error", "Error al cargar puestos.");
@@ -162,16 +151,6 @@ document.addEventListener('DOMContentLoaded', function () {
         mostrarMensaje("error", "Error al cargar puestos. Inténtalo nuevamente.");
         console.error("Error:", error);
       });
-  }
-
-  // Función para mostrar la alerta de puestos ocupados
-  function mostrarAlertaOcupado() {
-    alert("¡Atención! Hay un puesto ocupado.");
-    modalMensaje.classList.remove('hidden');
-    mensajeTexto.textContent = "¡Atención! Hay un puesto ocupado.";
-    setTimeout(() => {
-      modalMensaje.classList.add('hidden');
-    }, 3000);
   }
 
   // Función para mostrar un mensaje en el modal
@@ -212,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error("Error:", error);
       });
   }
+
   window.editPuesto = function (id) {
     fetch("/php/server_puesto.php", {
       method: "POST",
@@ -263,42 +243,6 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   };
 
-  function mostrarMensaje(tipo, mensaje) {
-    mensajeTexto.textContent = mensaje;
-    modalMensaje.classList.remove('hidden');
-    setTimeout(() => {
-      modalMensaje.classList.add('hidden');
-    }, 3000);
-  }
-
-  function cargarEstados(selectedEstado = null) {
-    fetch("/php/server_puesto.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "action=get_enum_values",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          estadoSelect.innerHTML = "";
-          data.enum_values.forEach((value) => {
-            const option = document.createElement("option");
-            option.value = value;
-            option.textContent = value.charAt(0).toUpperCase() + value.slice(1);
-            if (value === selectedEstado) {
-              option.selected = true;
-            }
-            estadoSelect.appendChild(option);
-          });
-        } else {
-          mostrarMensaje("error", "Error al cargar los valores de estado.");
-        }
-      })
-      .catch((error) => {
-        mostrarMensaje("error", "Error al cargar los valores de estado.");
-        console.error("Error:", error);
-      });
-  }
   // Cargar los puestos al cargar la página
   fetchPuestos();
 });
