@@ -6,6 +6,7 @@ CREATE DATABASE parqueadero;
 USE parqueadero;
 
 -- Crear la tabla puestos
+DROP DATATABLE IF EXISTS puestos;
 CREATE TABLE puestos (
     id_puesto INT AUTO_INCREMENT PRIMARY KEY,
     codigo VARCHAR(10) NOT NULL UNIQUE,
@@ -14,6 +15,7 @@ CREATE TABLE puestos (
 );
 
 -- Crear la tabla vehiculos
+DROP DATATABLE IF EXISTS vehiculos;
 CREATE TABLE vehiculos (
     id_vehiculo INT AUTO_INCREMENT PRIMARY KEY,
     placa VARCHAR(10) NOT NULL UNIQUE,
@@ -22,6 +24,7 @@ CREATE TABLE vehiculos (
 );
 
 -- Crear la tabla tarifas
+DROP DATATABLE IF EXISTS tarifas;
 CREATE TABLE tarifas (
     id_tarifa INT AUTO_INCREMENT PRIMARY KEY,
     tipo_vehiculo ENUM('motocicleta', 'automovil', 'camioneta') NOT NULL UNIQUE,
@@ -30,6 +33,7 @@ CREATE TABLE tarifas (
 );
 
 -- Crear la tabla ingresos
+DROP DATATABLE IF EXISTS ingresos;
 CREATE TABLE ingresos (
     id_ingreso INT AUTO_INCREMENT PRIMARY KEY,
     id_vehiculo INT NOT NULL,
@@ -43,6 +47,7 @@ CREATE TABLE ingresos (
 );
 
 -- Crear la tabla mensualidades
+DROP DATATABLE IF EXISTS mensualidades;
 CREATE TABLE mensualidades (
     id_mensualidad INT AUTO_INCREMENT PRIMARY KEY,
     id_vehiculo INT NOT NULL,
@@ -54,6 +59,7 @@ CREATE TABLE mensualidades (
 );
 
 -- Crear la tabla multas
+DROP DATATABLE IF EXISTS multas;
 CREATE TABLE multas (
     id_multa INT AUTO_INCREMENT PRIMARY KEY,
     id_ingreso INT NOT NULL,

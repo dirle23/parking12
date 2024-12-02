@@ -10,26 +10,30 @@ try {
 
     switch ($action) {
         case 'add':
-            $id_vehiculo = $_POST['id_vehiculo'];
+            $placa = $_POST['placa'];
+            $tipo = $_POST['tipoVehiculo'];
+            $propietario = $_POST['propietario'];
             $id_puesto = $_POST['id_puesto'];
             $fecha_ingreso = $_POST['fecha_ingreso'];
-            $fecha_salida = $_POST['fecha_salida'] ?? null;
-            $tarifa_aplicada = $_POST['tarifa_aplicada'] ?? null;
-            $multa = $_POST['multa'] ?? 0;
+            $tarifa_aplicada = $_POST['tarifa'];
 
-            // Verificar si el vehículo ya tiene un ingreso activo
-            $stmt = $pdo->prepare("SELECT COUNT(*) FROM ingresos WHERE id_vehiculo = ? AND fecha_salida IS NULL");
-            $stmt->execute([$id_vehiculo]);
-            $vehiculoActivo = $stmt->fetchColumn();
+            // Verificar si el vehículo ya existe
+            $stmt = $pdo->prepare("SELECT id_vehiculo FROM vehiculos WHERE placa = ?");
+            $stmt->execute([$placa]);
+            $vehiculo = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($vehiculoActivo > 0) {
-                echo json_encode(['success' => false, 'message' => 'El vehículo ya tiene un ingreso activo.']);
-                break;
+            if (!$vehiculo) {
+                // Insertar nuevo vehículo
+                $stmt = $pdo->prepare("INSERT INTO vehiculos (placa, tipo, propietario) VALUES (?, ?, ?)");
+                $stmt->execute([$placa, $tipo, $propietario]);
+                $id_vehiculo = $pdo->lastInsertId();
+            } else {
+                $id_vehiculo = $vehiculo['id_vehiculo'];
             }
 
-            $stmt = $pdo->prepare("INSERT INTO ingresos (id_vehiculo, id_puesto, fecha_ingreso, fecha_salida, tarifa_aplicada, multa) 
-                                   VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$id_vehiculo, $id_puesto, $fecha_ingreso, $fecha_salida, $tarifa_aplicada, $multa]);
+            // Insertar ingreso
+            $stmt = $pdo->prepare("INSERT INTO ingresos (id_vehiculo, id_puesto, fecha_ingreso, tarifa_aplicada) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$id_vehiculo, $id_puesto, $fecha_ingreso, $tarifa_aplicada]);
 
             // Actualizar el estado del puesto a 'ocupado'
             $stmt = $pdo->prepare("UPDATE puestos SET estado = 'ocupado' WHERE id_puesto = ?");
@@ -44,7 +48,7 @@ try {
             $id_puesto = $_POST['id_puesto'];
             $fecha_ingreso = $_POST['fecha_ingreso'];
             $fecha_salida = $_POST['fecha_salida'] ?? null;
-            $tarifa_aplicada = $_POST['tarifa_aplicada'] ?? null;
+            $tarifa_aplicada = $_POST['tarifa'];
             $multa = $_POST['multa'] ?? 0;
 
             $stmt = $pdo->prepare("UPDATE ingresos 
@@ -108,17 +112,31 @@ try {
             break;
 
         case 'getTarifa':
-            $id_vehiculo = $_POST['id_vehiculo'];
-            $stmt = $pdo->prepare("SELECT t.tarifa_hora 
-                                   FROM vehiculos v 
-                                   JOIN tarifas t ON v.tipo = t.tipo_vehiculo 
-                                   WHERE v.id_vehiculo = ?");
-            $stmt->execute([$id_vehiculo]);
+            $tipoVehiculo = $_POST['tipoVehiculo'];
+            $stmt = $pdo->prepare("SELECT tarifa_hora FROM tarifas WHERE tipo_vehiculo = ?");
+            $stmt->execute([$tipoVehiculo]);
             $tarifa = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($tarifa) {
                 echo json_encode(['success' => true, 'tarifa_hora' => $tarifa['tarifa_hora']]);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Tarifa no encontrada.']);
+            }
+            break;
+
+        case 'getVehiculo':
+            $placa = $_GET['placa'];
+            $stmt = $pdo->prepare("SELECT v.tipo, v.propietario, i.fecha_ingreso, p.codigo as puesto, t.tarifa_hora as tarifa
+                                   FROM vehiculos v
+                                   JOIN ingresos i ON v.id_vehiculo = i.id_vehiculo
+                                   JOIN puestos p ON i.id_puesto = p.id_puesto
+                                   JOIN tarifas t ON v.tipo = t.tipo_vehiculo
+                                   WHERE v.placa = ? AND i.fecha_salida IS NULL");
+            $stmt->execute([$placa]);
+            $vehiculo = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($vehiculo) {
+                echo json_encode(['success' => true, 'vehiculo' => $vehiculo]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Vehículo no encontrado o ya ha salido.']);
             }
             break;
 
