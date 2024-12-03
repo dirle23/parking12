@@ -122,6 +122,26 @@ try {
             }
             break;
 
+        case 'getIngresoByPlaca':
+            $placa = $_POST['placa'];
+            $stmt = $pdo->prepare("
+                SELECT i.*, v.placa, v.tipo, v.propietario, p.codigo AS puesto_codigo
+                FROM ingresos i
+                JOIN vehiculos v ON i.id_vehiculo = v.id_vehiculo
+                JOIN puestos p ON i.id_puesto = p.id_puesto
+                WHERE v.placa = ?
+                ORDER BY i.fecha_ingreso DESC
+                LIMIT 1
+            ");
+            $stmt->execute([$placa]);
+            $ingreso = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($ingreso) {
+                echo json_encode(['success' => true, 'data' => $ingreso]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'No se encontró ningún ingreso para la placa proporcionada.']);
+            }
+            break;
+
         default:
             echo json_encode(['success' => false, 'message' => 'Acción no válida.']);
             break;

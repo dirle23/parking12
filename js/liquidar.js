@@ -146,22 +146,29 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        fetch(`/php/server_formulario.php?action=getVehiculo&placa=${placa}`)
+        fetch('/php/server_ingreso.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `action=getIngresoByPlaca&placa=${placa}`
+        })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    tipoVehiculoSelect.value = data.tipo;
-                    propietarioInput.value = data.propietario;
-                    fechaIngresoInput.value = data.fecha_ingreso.split(' ')[0];
-                    horaIngresoInput.value = data.fecha_ingreso.split(' ')[1].substring(0, 5);
-                    puestoInput.value = data.puesto;
-                    tarifaInput.value = data.tarifa;
+                    const ingreso = data.data;
+                    tipoVehiculoSelect.value = ingreso.tipo;
+                    propietarioInput.value = ingreso.propietario;
+                    fechaIngresoInput.value = ingreso.fecha_ingreso.split(' ')[0];
+                    horaIngresoInput.value = ingreso.fecha_ingreso.split(' ')[1].substring(0, 5);
+                    puestoInput.value = ingreso.puesto_codigo;
+                    tarifaInput.value = ingreso.tarifa_aplicada;
+                    fechaSalidaInput.value = ingreso.fecha_salida ? ingreso.fecha_salida.split(' ')[0] : '';
+                    horaSalidaInput.value = ingreso.fecha_salida ? ingreso.fecha_salida.split(' ')[1].substring(0, 5) : '';
                 } else {
-                    alert('Vehículo no encontrado.');
+                    alert(data.message);
                 }
             })
             .catch(error => {
-                console.error('Error al obtener los datos del vehículo:', error);
+                console.error('Error al obtener los datos del ingreso:', error);
             });
     }
 
