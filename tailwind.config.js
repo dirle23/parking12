@@ -12,6 +12,7 @@ module.exports = {
         color6: '#2e2d2e', // grisOscuro
         color7: '#c71518', // rojo
         color8: '#9e0f11', // rojoOscuro
+        color9: '#09730f', // verde
       },
       spacing: {
         '0.5': '0.125rem', // 2px
