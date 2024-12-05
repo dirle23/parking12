@@ -24,26 +24,21 @@ try {
                 $propietario = 'Invitado';
             }
 
-            // Verificar si el vehículo ya existe
             $stmt = $pdo->prepare("SELECT id_vehiculo FROM vehiculos WHERE placa = ?");
             $stmt->execute([$placa]);
             $vehiculo = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($vehiculo) {
-                echo json_encode(['success' => false, 'message' => 'La placa ya existe en la base de datos.']);
-                break;
+            if (!$vehiculo) {
+                $stmt = $pdo->prepare("INSERT INTO vehiculos (placa, tipo, propietario) VALUES (?, ?, ?)");
+                $stmt->execute([$placa, $tipo, $propietario]);
+                $id_vehiculo = $pdo->lastInsertId();
+            } else {
+                $id_vehiculo = $vehiculo['id_vehiculo'];
             }
 
-            // Insertar nuevo vehículo
-            $stmt = $pdo->prepare("INSERT INTO vehiculos (placa, tipo, propietario) VALUES (?, ?, ?)");
-            $stmt->execute([$placa, $tipo, $propietario]);
-            $id_vehiculo = $pdo->lastInsertId();
-
-            // Insertar ingreso
             $stmt = $pdo->prepare("INSERT INTO ingresos (id_vehiculo, id_puesto, fecha_ingreso, tarifa_aplicada) VALUES (?, ?, ?, ?)");
             $stmt->execute([$id_vehiculo, $id_puesto, $fecha_ingreso, $tarifa_aplicada]);
 
-            // Actualizar el estado del puesto a 'ocupado'
             $stmt = $pdo->prepare("UPDATE puestos SET estado = 'ocupado' WHERE id_puesto = ?");
             $stmt->execute([$id_puesto]);
 

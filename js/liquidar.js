@@ -44,6 +44,38 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(error => console.error('Error al cargar puestos disponibles:', error));
     }
 
+    function validarHorario(fecha, hora) {
+        const diaSemana = fecha.getDay();
+        const horaActual = parseInt(hora.split(':')[0], 10);
+        const minutoActual = parseInt(hora.split(':')[1], 10);
+
+        if (diaSemana >= 1 && diaSemana <= 5) { // Lunes a viernes
+            return (horaActual >= 6 && (horaActual < 22 || (horaActual === 22 && minutoActual === 0)));
+        } else if (diaSemana === 6) { // Sábados
+            return (horaActual >= 9 && (horaActual < 19 || (horaActual === 19 && minutoActual === 0)));
+        } else if (diaSemana === 0) { // Domingos
+            return (horaActual >= 9 && (horaActual < 12 || (horaActual === 12 && minutoActual === 0)));
+        }
+        return false;
+    }
+
+    function limpiarFormulario() {
+        tipoVehiculoSelect.value = '';
+        document.getElementById('placa').value = '';
+        fechaIngresoInput.value = '';
+        horaIngresoInput.value = '';
+        puestoSelect.value = '';
+        tarifaInput.value = '';
+        esMensualidadSelect.value = 'no';
+        camposMensualidadDiv.classList.add('hidden');
+        campoPropietarioDiv.classList.add('hidden');
+        propietarioInput.value = 'Invitado';
+        document.getElementById('fechaInicio').value = '';
+        document.getElementById('fechaFin').value = '';
+        document.getElementById('horarioEntrada').value = '';
+        document.getElementById('horarioSalida').value = '';
+    }
+
     tipoVehiculoSelect.addEventListener('change', function () {
         const tipoVehiculo = tipoVehiculoSelect.value;
         if (tipoVehiculo) {
@@ -103,6 +135,14 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        const fechaIngreso = new Date(datosVehiculo.fechaIngreso);
+        const horaIngreso = datosVehiculo.horaIngreso;
+
+        if (!validarHorario(fechaIngreso, horaIngreso)) {
+            alert('El horario de ingreso no está dentro del horario permitido del parqueadero.');
+            return;
+        }
+
         fetch('./php/server_formulario.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -112,6 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             if (data.success) {
                 alert('Vehículo registrado con éxito.');
+                limpiarFormulario();
                 cargarPuestosDisponibles();
             } else {
                 alert(`Error al registrar el vehículo: ${data.message}`);
