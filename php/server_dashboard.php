@@ -21,10 +21,9 @@ if ($action == 'getDashboardData') {
     $stmt = $pdo->query("SELECT COUNT(*) AS puestosDisponibles FROM puestos WHERE estado = 'disponible'");
     $data['puestosDisponibles'] = $stmt->fetch(PDO::FETCH_ASSOC)['puestosDisponibles'];
 
-    // Ingresos y egresos
-    $stmt = $pdo->query("SELECT SUM(tarifa_aplicada) AS ingresos, SUM(multa) AS egresos FROM ingresos");
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    $data['ingresosEgresos'] = $result['ingresos'] - $result['egresos'];
+    // Ingresos diarios de vehículos
+    $stmt = $pdo->query("SELECT COUNT(*) AS ingresosDiarios FROM ingresos WHERE DATE(fecha_ingreso) = CURDATE()");
+    $data['ingresosDiarios'] = $stmt->fetch(PDO::FETCH_ASSOC)['ingresosDiarios'];
 
     // Multas generadas y pagadas
     $stmt = $pdo->query("SELECT COUNT(*) AS multasGeneradas FROM multas");

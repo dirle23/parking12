@@ -35,8 +35,10 @@
             <form id="dataForm" class="space-y-6" onsubmit="enviarDatos(event)">
                 <input type="hidden" id="id_mensualidad" name="id_mensualidad">
                 <div>
-                    <label for="id_vehiculo" class="block text-lg font-medium">ID Vehículo</label>
-                    <input type="text" id="id_vehiculo" name="id_vehiculo" placeholder="ID Vehículo" required class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">
+                    <label for="id_vehiculo" class="block text-lg font-medium">Vehículo</label>
+                    <select id="id_vehiculo" name="id_vehiculo" required class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">
+                        <!-- Opciones se llenarán dinámicamente -->
+                    </select>
                 </div>
                 <div>
                     <label for="fecha_inicio" class="block text-lg font-medium">Fecha Inicio</label>

@@ -14,9 +14,18 @@ try {
             $tarifa_hora = $_POST['tarifa_hora'];
             $tiempo_gracia = $_POST['tiempo_gracia'];
 
-            $stmt = $pdo->prepare("INSERT INTO tarifas (tipo_vehiculo, tarifa_hora, tiempo_gracia) VALUES (?, ?, ?)");
-            $stmt->execute([$tipo_vehiculo, $tarifa_hora, $tiempo_gracia]);
-            echo json_encode(['success' => true, 'message' => 'Tarifa creada con éxito.']);
+            // Verificar si ya existen tarifas para los tipos de vehículos especificados
+            $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM tarifas WHERE tipo_vehiculo IN ('motocicleta', 'automovil', 'camioneta')");
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($result['count'] >= 3) {
+                echo json_encode(['success' => false, 'message' => 'No se pueden crear más tarifas, porque ya están creadas para los tipos de vehículo: motocicleta, automovil, camioneta.']);
+            } else {
+                $stmt = $pdo->prepare("INSERT INTO tarifas (tipo_vehiculo, tarifa_hora, tiempo_gracia) VALUES (?, ?, ?)");
+                $stmt->execute([$tipo_vehiculo, $tarifa_hora, $tiempo_gracia]);
+                echo json_encode(['success' => true, 'message' => 'Tarifa creada con éxito.']);
+            }
             break;
 
         case 'update':

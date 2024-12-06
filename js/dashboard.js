@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('multasPermanencia').innerText = data.multasPermanencia;
             document.getElementById('puestosOcupados').innerText = data.puestosOcupados;
             document.getElementById('puestosDisponibles').innerText = data.puestosDisponibles;
-            document.getElementById('ingresosEgresos').innerText = data.ingresosEgresos;
+            document.getElementById('ingresosEgresos').innerText = data.ingresosDiarios; // Actualiza este campo
             document.getElementById('multasGeneradasPagadas').innerText = data.multasGeneradasPagadas;
             document.getElementById('mensualidadesActivasVencidas').innerText = data.mensualidadesActivasVencidas;
         })

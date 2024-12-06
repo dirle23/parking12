@@ -56,7 +56,7 @@ try {
             break;
 
         case 'getPuestos':
-            $stmt = $pdo->query("SELECT id_puesto, codigo, ubicacion, estado FROM puestos WHERE estado = 'disponible'");
+            $stmt = $pdo->query("SELECT id_puesto, codigo, estado FROM puestos WHERE estado = 'disponible'");
             $puestos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             echo json_encode($puestos);
             break;

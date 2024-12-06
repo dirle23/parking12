@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 data.forEach((vehiculo) => {
                     const option = document.createElement("option");
                     option.value = vehiculo.id_vehiculo;
-                    option.textContent = `${vehiculo.id_vehiculo} - ${vehiculo.placa}`;
+                    option.textContent = `${vehiculo.placa}`;
                     idVehiculoSelect.appendChild(option);
                 });
             })
